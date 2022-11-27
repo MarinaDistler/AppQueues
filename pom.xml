@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.project</groupId>
-    <artifactId>project_idea2</artifactId>
+    <artifactId>AppQueuesServer</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>project_idea2</name>
+    <name>AppQueuesServer</name>
     <packaging>war</packaging>
 
     <properties>

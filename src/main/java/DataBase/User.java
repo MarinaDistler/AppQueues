@@ -1,4 +1,4 @@
-package com.project.project_idea2.DataBase;
+package DataBase;
 
 public class User {
     private Long user_id;

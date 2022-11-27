@@ -1,14 +1,13 @@
-package com.project.project_idea2;
+package AppQueuesServer;
 
 import java.io.*;
-import java.sql.SQLException;
 
 import org.json.JSONObject;
 
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
-import com.project.project_idea2.DataBase.PostgreSQLController;
+import DataBase.PostgreSQLController;
 
 @WebServlet(name = "helloServlet", value = "/hello-servlet")
 public class HelloServlet extends HttpServlet {

@@ -1,6 +1,4 @@
-package com.project.project_idea2.DataBase;
-
-import com.project.project_idea2.DataBase.User;
+package DataBase;
 
 import java.sql.*;
 import java.util.ArrayList;
