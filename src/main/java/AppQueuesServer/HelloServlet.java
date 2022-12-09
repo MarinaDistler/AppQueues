@@ -15,29 +15,26 @@ public class HelloServlet extends HttpServlet {
     private PostgreSQLController controller;
 
     public void init() {
-        message = "Hello World!";
         controller = new PostgreSQLController();
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("GET");
 
-        response.setContentType("text/html");
+        response.setContentType("application/json");
 
         // Hello
         PrintWriter out = response.getWriter();
-        out.println("<html><body>");
-        out.println("<h1>" + message + "!!!!</h1>");
         try {
-            out.println("<p>" + controller.getAllNames() + "!!!!</p>");
+            JSONObject jsonObgect = new JSONObject();
+            jsonObgect.put("logins", controller.getAllNames());
+            out.println(jsonObgect);
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("GET " + e);
         }
-
-        out.println("</body></html>");
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("POST");
         StringBuilder jb = new StringBuilder();
 
@@ -47,10 +44,20 @@ public class HelloServlet extends HttpServlet {
             while ((line = reader.readLine()) != null)
                 jb.append(line);
             JSONObject jsonObject = new JSONObject(jb.toString());
-            controller.addUser(jsonObject.getString("login"),
-                    jsonObject.getLong("password"));
+            int status = controller.addUser(
+                    jsonObject.getString("login"),
+                    jsonObject.getString("password")
+            );
+            if (status != 200) {
+                response.setStatus(status);
+                response.setContentType("application/json");
+                PrintWriter out = response.getWriter();
+                JSONObject jsonObgect = new JSONObject();
+                jsonObgect.put("error", "Логин уже существует");
+                out.println(jsonObgect);
+            }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("POST " + e);
         }
     }
 }

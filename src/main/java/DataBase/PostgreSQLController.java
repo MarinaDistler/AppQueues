@@ -27,22 +27,47 @@ public class PostgreSQLController {
         }
     }
 
-    public static void addUser(String login, Long password) {
+    public static int addUser(String login, String password) {
+        int status = 200;
         try {
             Conn();
             stat = conn.createStatement();
             String sql = "INSERT INTO users(login, password) VALUES (?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, login);
-            statement.setLong(2, password);
+            statement.setString(2, password);
             statement.execute();
             statement.close();
             stat.close();
         } catch (Exception e) {
             System.out.println(e);
+            status = 400;
         }
         finally {
             CloseDB();
+            return status;
+        }
+    }
+
+    public static int checkUser(String login, String password) {
+        int status = 200;
+        try {
+            Conn();
+            stat = conn.createStatement();
+            String sql = "SELECT INTO users(login, password) VALUES (?, ?)";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, login);
+            statement.setString(2, password);
+            statement.execute();
+            statement.close();
+            stat.close();
+        } catch (Exception e) {
+            System.out.println(e);
+            status = 400;
+        }
+        finally {
+            CloseDB();
+            return status;
         }
     }
 

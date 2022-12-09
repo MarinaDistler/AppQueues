@@ -1,14 +1,14 @@
 <component name="ArtifactManager">
-  <artifact type="war" name="project_idea2:war">
+  <artifact type="war" name="AppQueues:war">
     <output-path>$PROJECT_DIR$/target</output-path>
     <properties id="maven-jee-properties">
       <options>
-        <module>project_idea2</module>
+        <module>AppQueues</module>
         <packaging>war</packaging>
       </options>
     </properties>
-    <root id="archive" name="project_idea2-1.0-SNAPSHOT.war">
-      <element id="artifact" artifact-name="project_idea2:war exploded" />
+    <root id="archive" name="AppQueuesServer-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="AppQueues:war exploded" />
     </root>
   </artifact>
 </component>
