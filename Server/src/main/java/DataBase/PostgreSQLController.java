@@ -1,5 +1,7 @@
 package DataBase;
 
+import org.postgresql.util.PSQLException;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -39,8 +41,8 @@ public class PostgreSQLController {
             statement.execute();
             statement.close();
             stat.close();
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (PSQLException e) {
+            System.out.println(e.getServerErrorMessage()); //добавить определение ошибки повторяющегося логина
             status = 400;
         }
         finally {
