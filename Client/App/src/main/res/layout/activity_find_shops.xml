@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9C27B0"
+    android:isScrollContainer="false"
+    tools:context=".clients.FindShopsActivity">
+
+    <Button
+        android:id="@+id/button_scan"
+        android:layout_width="265dp"
+        android:layout_height="69dp"
+        android:backgroundTint="@color/teal_700"
+        android:enabled="true"
+        android:onClick="scanQr"
+        android:text="Scan QR-code"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.04" />
+
+    <Button
+        android:id="@+id/button_find"
+        android:layout_width="265dp"
+        android:layout_height="69dp"
+        android:layout_marginTop="27dp"
+        android:backgroundTint="@color/teal_700"
+        android:enabled="true"
+        android:onClick="findShop"
+        android:text="Find "
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextShopName" />
+
+    <TextView
+        android:id="@+id/textSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="96dp"
+        android:text="Or enter the name"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.532"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/button_scan" />
+
+    <EditText
+        android:id="@+id/editTextShopName"
+        android:layout_width="320dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="24dp"
+        android:width="10dp"
+        android:backgroundTint="#00897B"
+        android:ems="10"
+        android:enabled="true"
+        android:inputType="textPersonName"
+        android:scrollHorizontally="true"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#00897B"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#00897B"
+        android:textSize="24sp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSelect" />
+
+    <ScrollView
+        android:layout_width="351dp"
+        android:layout_height="345dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginEnd="30dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_find">
+
+        <LinearLayout
+            android:id="@+id/layoutQueues"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="invisible" />
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

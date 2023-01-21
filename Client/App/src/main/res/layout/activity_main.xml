@@ -65,7 +65,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/button_scan"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
@@ -82,18 +82,34 @@
     />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_scan"
         android:layout_width="265dp"
         android:layout_height="69dp"
         android:layout_marginTop="564dp"
         android:backgroundTint="#00897B"
         android:onClick="goToActivity2"
-        android:text="start"
+        android:text="Login"
         android:textAllCaps="false"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_queue"
+        android:layout_width="265dp"
+        android:layout_height="69dp"
+        android:layout_marginTop="500dp"
+        android:backgroundTint="#00897B"
+        android:onClick="goToFindQueueActivity"
+        android:text="Join the queue"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.172" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

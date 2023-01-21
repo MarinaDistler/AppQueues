@@ -10,7 +10,7 @@
 >
 
     <TextView
-        android:id="@+id/textLogIn"
+        android:id="@+id/textSelect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="please log in"
@@ -42,10 +42,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.111"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textLogIn" />
+        app:layout_constraintTop_toBottomOf="@id/textSelect" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/editTextShopName"
         android:layout_width="250dp"
         android:layout_height="64dp"
         android:width="10dp"
@@ -99,14 +99,14 @@
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.818"
-        app:layout_constraintLeft_toLeftOf="@id/editTextTextPersonName"
-        app:layout_constraintRight_toRightOf="@id/editTextTextPersonName"
+        app:layout_constraintLeft_toLeftOf="@id/editTextShopName"
+        app:layout_constraintRight_toRightOf="@id/editTextShopName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/textPassword" />
 
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_scan"
         android:layout_width="265dp"
         android:layout_height="69dp"
         android:layout_marginTop="456dp"
@@ -122,6 +122,6 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textLogIn" />
+        app:layout_constraintTop_toBottomOf="@id/textSelect" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

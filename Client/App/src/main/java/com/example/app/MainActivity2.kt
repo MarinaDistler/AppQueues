@@ -15,17 +15,17 @@ class MainActivity2 : AppCompatActivity() {
         setContentView(R.layout.activity_main2)
     }
     fun onClick(view: View) {
-        val name = findViewById<EditText>(R.id.editTextTextPersonName).text.toString()
+        val name = findViewById<EditText>(R.id.editTextShopName).text.toString()
         val pass = findViewById<EditText>(R.id.editTextPassword).text.toString()
         if (name.isEmpty() or pass.isEmpty()) {
             Toast.makeText(this, "both name and pass are required", Toast.LENGTH_SHORT).show()
-        } else if (Network().HttpPost("hello-servlet", JSONObject()
+        } else if (Network().doHttpPost("hello-servlet", JSONObject()
                     .put("login", name)
                     .put("password", pass)).has("error")) { // добавить другие ошибки
             Toast.makeText(this, "Login already exists", Toast.LENGTH_SHORT).show()
         }
         else {
-            Network().HttpGet("hello-servlet") // проверка для дебага
+            Network().doHttpGet("hello-servlet") // проверка для дебага
             goToActivity3(view)
         }
     }

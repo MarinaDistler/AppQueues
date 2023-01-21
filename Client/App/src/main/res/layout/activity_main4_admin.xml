@@ -55,7 +55,7 @@
         app:layout_constraintTop_toBottomOf="@id/textViewServices" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_scan"
         android:layout_width="265dp"
         android:layout_height="69dp"
         android:layout_marginTop="40dp"
@@ -89,6 +89,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/button_scan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
