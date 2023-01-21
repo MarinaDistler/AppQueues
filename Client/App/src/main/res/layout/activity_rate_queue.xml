@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#9C27B0"
     android:isScrollContainer="false"
-    tools:context=".clients.SelectQueuesActivity">
+    tools:context=".clients.RateQueueActivity">
 
     <TextView
         android:id="@+id/textSelect"

@@ -5,20 +5,19 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet(name = "FindShopsServlet", value = "/find-shops")
 public class FindShopsServlet extends BaseServlet {
-    public void doGet(HttpServletRequest request, HttpServletResponse response) {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = basicDo(response);
-        JSONObject answer = new JSONObject();
-        String name = request.getParameter("name");
-        if (name.isEmpty()) {
-            answer.put("error", "name should be in request");
-            out.println(answer);
+        if (checkParameters(request, new String[]{"name"}, out)) {
             return;
         }
-        answer.put("shops", controller.findShops(name));
+        String name = request.getParameter("name");
+        JSONObject answer = controller.findShops(name);
         out.println(answer);
     }
 }

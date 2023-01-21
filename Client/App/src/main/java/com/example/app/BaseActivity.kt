@@ -16,6 +16,7 @@ open class BaseActivity : AppCompatActivity() {
     fun sendToast(text: String) {
         val toast = Toast.makeText(this, text, Toast.LENGTH_SHORT)
         toast.show()
+        println(text)
     }
 
     fun createButton(activity: Activity, text: String, function: (view: View) -> Unit, layout: LinearLayout) {

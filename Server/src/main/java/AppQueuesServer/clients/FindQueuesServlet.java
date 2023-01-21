@@ -6,20 +6,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet(name = "FindQueuesServlet", value = "/find-queues")
 public class FindQueuesServlet extends BaseServlet {
-    public void doGet(HttpServletRequest request, HttpServletResponse response) {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = basicDo(response);
-        JSONObject answer = new JSONObject();
-        if (request.getParameter("shop_id").isEmpty()) {
-            answer.put("error", "shop should be in request");
-            out.println(answer);
+        if (checkParameters(request, new String[]{"shop_id"}, out)) {
             return;
         }
         Integer shop_id = Integer.valueOf(request.getParameter("shop_id"));
-        answer.put("queues", controller.findQueues(shop_id));
+        JSONObject answer = controller.findQueues(shop_id);
         out.println(answer);
     }
 }

@@ -1,7 +1,9 @@
 package DataBase;
 
+import org.json.JSONObject;
 import org.postgresql.util.PSQLException;
 
+import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +33,7 @@ public class PostgreSQLController {
         }
     }
 
-    public Map<String, Integer> findShops(String name) {
+    public JSONObject findShops(String name) {
         Conn();
         Map<String, Integer> shops = new HashMap<>();
         try {
@@ -51,10 +53,10 @@ public class PostgreSQLController {
             System.out.println("Database findShops: " + e);
         }
         CloseDB();
-        return shops;
+        return new JSONObject().put("shops", shops);
     }
 
-    public Map<String, Integer> findQueues(Integer shop_id) {
+    public JSONObject findQueues(Integer shop_id) {
         Conn();
         Map<String, Integer> queues = new HashMap<>();
         try {
@@ -73,7 +75,100 @@ public class PostgreSQLController {
             System.out.println("Database findQueues: " + e);
         }
         CloseDB();
-        return queues;
+        return new JSONObject().put("queues", queues);
+    }
+
+    public JSONObject addUserToQueue(Integer queue_id, Integer user_id, String user_name) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            stat = conn.createStatement();
+            String sql = "insert into queue_users(user_id, queue_id, record_name) " +
+                    "values (?, ?, ?) returning record_id";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            if (user_id == null) {
+                statement.setNull(1, Types.NULL);
+            } else {
+                statement.setInt(1, user_id);
+            }
+            statement.setInt(2, queue_id);
+            statement.setString(3,  user_name == null ? "Anonymous" : user_name);
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+            answer.put("record_id", rs.getInt("record_id"));
+            rs.close();
+            statement.close();
+            stat.close();
+        } catch (SQLException e) {
+            System.out.println("Database addUserToQueue: " + e);
+        }
+        CloseDB();
+        return answer;
+    }
+
+    public JSONObject getInfoUserInQueue(Integer record_id, Integer queue_id) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            stat = conn.createStatement();
+            String sql = "select count(*) as number from queue_users " +
+                    "where queue_id=? and status='WAIT' and record_id<=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, queue_id);
+            statement.setInt(2, record_id);
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+            Integer number = rs.getInt("number");
+            answer.put("number", number);
+            rs.close();
+            statement.close();
+            stat.close();
+            answer.put("time", -1);
+            /* рпедсказание времени
+            stat = conn.createStatement();
+            sql = "select count(*) as num_req, avg(end_work_time-start_work_time) as mean_time " +
+                    "from queue_users where queue_id=? and status='COMPLITED'";
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, queue_id);
+            rs = statement.executeQuery();
+            rs.next();
+            if (rs.getInt("mean_time") < 5) {
+                answer.put("time", -1);
+            } else {
+                answer.put("time", rs.getInt("mean_time"));
+            }
+            rs.close();
+            statement.close();
+            stat.close();*/
+            sql = "select count(*) as num_workers from queue_workers, history_work " +
+                    "where queue_id=? and queue_workers.worker_user_id=history_work.worker_user_id and " +
+                    "end_time=null";
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, queue_id);
+            rs = statement.executeQuery();
+            rs.next();
+            answer.put("num_workers", rs.getInt("num_workers"));
+            rs.close();
+            statement.close();
+            stat.close();
+            if (number == 0) {
+                sql = "select status, window_name from queue_users, queue_workers " +
+                        "where queue_users.record_id=? and queue_users.worker_user_id=queue_workers.worker_user_id";
+                statement = conn.prepareStatement(sql);
+                statement.setInt(1, record_id);
+                rs = statement.executeQuery();
+                rs.next();
+                answer.put("status", rs.getString("status"));
+                answer.put("window_name", rs.getString("window_name"));
+                rs.close();
+                statement.close();
+                stat.close();
+            }
+        } catch (SQLException e) {
+            System.out.println("Database getInfoUserInQueue: " + e);
+        }
+        CloseDB();
+        return answer;
     }
 
     public static int addUser(String login, String password) {

@@ -16,11 +16,12 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class FindShopsActivity : BaseActivity() {
+    val path = "find-shops"
     var shops: JSONObject? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_find_shops)
+        setContentView(R.layout.activity_find_shops) // добавить проверку, что он уже стоит в очереди
     }
 
     fun scanQr(view: View) {
@@ -31,13 +32,11 @@ class FindShopsActivity : BaseActivity() {
         if (name.isEmpty()) {
             sendToast("Name can not be empty")
         } else {
-            val answer = network.doHttpGet("find-shops", listOf("name" to name))
-            if (network.checkForError(answer, this)) {
+            val answer = network.doHttpGet(path, listOf("name" to name))
+            if (network.checkForError(answer, arrayOf("shops"), this)) {
                 return
             }
-            if (!answer.has("shops")) {
-                sendToast("server error: shops not found in answer")
-            } else if ((answer.get("shops") as JSONObject).length() == 0) {
+            if ((answer.get("shops") as JSONObject).length() == 0) {
                 sendToast("Nothing found")
             } else {
                 shops = answer.get("shops") as JSONObject
