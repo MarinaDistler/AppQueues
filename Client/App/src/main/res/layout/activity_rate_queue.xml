@@ -3,6 +3,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#9C27B0"
@@ -10,32 +11,11 @@
     tools:context=".clients.RateQueueActivity">
 
     <TextView
-        android:id="@+id/textSelect"
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="90dp"
-        android:text="Select the queue"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textColorHighlight="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textColorLink="#FFFFFF"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/textQueueName" />
-
-    <TextView
         android:id="@+id/textQueueName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:layout_marginBottom="90dp"
-        android:text="Shop name"
+        android:text="Queue name"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textColorHighlight="#FFFFFF"
@@ -43,31 +23,62 @@
         android:textColorLink="#FFFFFF"
         android:textSize="48sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="337dp"
-        android:layout_height="566dp"
-        android:layout_marginStart="30dp"
+    <TextView
+        android:id="@+id/textSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="30dp"
-        android:visibility="visible"
+        android:text="Please rate the service"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textQueueName" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="85dp"
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="86dp"
+        android:background="@color/teal_700"
+        android:numStars="5"
+        android:stepSize="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSelect" />
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="293dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="195dp"
+        android:backgroundTint="@color/teal_700"
+        android:enabled="true"
+        android:onClick="rateQueue"
+        android:text="Save"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#FFFFFF"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textSelect">
-
-        <LinearLayout
-            android:id="@+id/layoutQueues"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="invisible" />
-    </ScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

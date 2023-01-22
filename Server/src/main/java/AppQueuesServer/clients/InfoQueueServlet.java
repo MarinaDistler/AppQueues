@@ -8,17 +8,25 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
 
 @WebServlet(name = "InfoQueueServlet", value = "/info-queue")
 public class InfoQueueServlet extends BaseServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = basicDo(response);
-        if (checkParameters(request, new String[]{"record_id", "queue_id"}, out)) {
+        HttpSession session = request.getSession();
+        if (checkSession(session, new String[]{"record_id", "queue_id"}, out) || checkParameters(request, new String[]{"check_status"}, out)) {
             return;
         }
-        Integer record_id = Integer.valueOf(request.getParameter("record_id"));
-        Integer queue_id = Integer.valueOf(request.getParameter("queue_id"));
-        JSONObject answer = controller.getInfoUserInQueue(record_id, queue_id);
+        Integer record_id = (Integer) session.getAttribute("record_id");
+        Integer queue_id = (Integer) session.getAttribute("queue_id");
+        Boolean check_status = Boolean.valueOf(request.getParameter("check_status"));
+        JSONObject answer = new JSONObject();
+        if (!check_status) {
+            answer = controller.getInfoUserInQueue(record_id, queue_id);
+        } else {
+            answer = controller.checkUserStatus(record_id);
+        }
         out.println(answer);
     }
 
@@ -38,6 +46,7 @@ public class InfoQueueServlet extends BaseServlet {
                 (String) session.getAttribute("user_name"));
         session.setAttribute("record_id", answer.getInt("record_id"));
         session.setAttribute("queue_id", queue_id);
+        answer.remove("record_id");
         out.println(answer);
     }
 }

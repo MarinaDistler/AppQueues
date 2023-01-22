@@ -9,9 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.network.Network
 import org.json.JSONObject
 
-class MainActivity2 : AppCompatActivity() {
+class MainActivity2 : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        network.initSharedPreferences(this)
         setContentView(R.layout.activity_main2)
     }
     fun onClick(view: View) {
@@ -19,13 +20,13 @@ class MainActivity2 : AppCompatActivity() {
         val pass = findViewById<EditText>(R.id.editTextPassword).text.toString()
         if (name.isEmpty() or pass.isEmpty()) {
             Toast.makeText(this, "both name and pass are required", Toast.LENGTH_SHORT).show()
-        } else if (Network().doHttpPost("hello-servlet", JSONObject()
+        } else if (network.doHttpPost("hello-servlet", JSONObject()
                     .put("login", name)
                     .put("password", pass)).has("error")) { // добавить другие ошибки
             Toast.makeText(this, "Login already exists", Toast.LENGTH_SHORT).show()
         }
         else {
-            Network().doHttpGet("hello-servlet") // проверка для дебага
+            network.doHttpGet("hello-servlet") // проверка для дебага
             goToActivity3(view)
         }
     }

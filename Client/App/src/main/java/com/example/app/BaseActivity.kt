@@ -1,22 +1,106 @@
 package com.example.app
 
-import android.app.Activity
+import android.app.*
+import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.fragment.app.DialogFragment
 import com.example.network.Network
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
+
+
+class BaseDialogFragment(val title: String, val text: String) : DialogFragment() {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return activity?.let {
+            val builder = AlertDialog.Builder(it)
+            builder.setTitle(title)
+                .setMessage(text)
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
+    }
+}
 
 open class BaseActivity : AppCompatActivity() {
     val network = Network()
+    var notification_id = 1
+    var channel_id: String? = null
+    var notificationManager: NotificationManager? = null
 
-    fun sendToast(text: String) {
-        val toast = Toast.makeText(this, text, Toast.LENGTH_SHORT)
-        toast.show()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        channel_id = getString(R.string.app_name)
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val importance = NotificationManager.IMPORTANCE_MAX
+        val channel = NotificationChannel(channel_id, channel_id + "base", importance)
+        channel.enableLights(true)
+        channel.lightColor = getColor(R.color.teal_700)
+        channel.enableVibration(true)
+        notificationManager!!.createNotificationChannel(channel)
+    }
+
+    fun isBackground() : Boolean {
+        val runningAppProcessInfo = ActivityManager.RunningAppProcessInfo()
+        ActivityManager.getMyMemoryState(runningAppProcessInfo)
+        return runningAppProcessInfo.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+    }
+
+    fun showSnackBar(text: String) {
+        val snackBarView = Snackbar.make(findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG)
+        val view = snackBarView.view
+        val params = view.layoutParams as FrameLayout.LayoutParams
+        params.gravity = Gravity.TOP
+        view.layoutParams = params
+        snackBarView.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
+        snackBarView.show()
         println(text)
+    }
+
+    fun showDialog(title: String, text: String) {
+        if (isBackground()) {
+            return
+        }
+        val myDialogFragment = BaseDialogFragment(title, text)
+        val manager = supportFragmentManager
+        myDialogFragment.show(manager, "myDialog")
+    }
+
+    fun showNotification(title: String, text: String, ntfc_id: Int? = null,
+                         intent: Intent = Intent(this, MainActivity::class.java)
+    ) : Int? {
+        if (!isBackground()) {
+            return null
+        }
+        intent.apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent = PendingIntent.getActivity(this,0,
+            intent, PendingIntent.FLAG_IMMUTABLE)
+        val builder = NotificationCompat.Builder(this, channel_id!!)
+            .setSmallIcon(R.drawable.logo)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setDefaults(Notification.DEFAULT_ALL)
+        var id = ntfc_id
+        if (id == null) {
+            id = notification_id
+            notification_id += 1
+        }
+        notificationManager!!.notify(id, builder.build())
+        return id
     }
 
     fun createButton(activity: Activity, text: String, function: (view: View) -> Unit, layout: LinearLayout) {

@@ -4,6 +4,7 @@ import DataBase.PostgreSQLController;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -27,6 +28,22 @@ public class BaseServlet extends HttpServlet {
         }
         if (!missing_params.isEmpty()) {
             out.println(new JSONObject().put("error", missing_params + " should be in params"));
+            System.out.println("error checkParameters: " + missing_params + " should be in params");
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean checkSession(HttpSession session, String[] params, PrintWriter out) {
+        ArrayList<String> missing_params = new ArrayList<>();
+        for (String param : params) {
+            if (session.getAttribute(param) == null) {
+                missing_params.add(param);
+            }
+        }
+        if (!missing_params.isEmpty()) {
+            out.println(new JSONObject().put("error", missing_params + " should be in session attributes"));
+            System.out.println("error checkSession: " + missing_params + " should be in session attributes");
             return true;
         }
         return false;
@@ -41,6 +58,7 @@ public class BaseServlet extends HttpServlet {
         }
         if (!missing_params.isEmpty()) {
             out.println(new JSONObject().put("error", missing_params + " should be in body"));
+            System.out.println("error checkBody: " + missing_params + " should be in body");
             return true;
         }
         return false;

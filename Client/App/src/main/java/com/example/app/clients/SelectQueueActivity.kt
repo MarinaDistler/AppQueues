@@ -18,9 +18,10 @@ class SelectQueueActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        network.initSharedPreferences(this)
         setContentView(R.layout.activity_select_queues)
         shop = intent.getStringExtra("shop")
-        findViewById<TextView>(R.id.textQueueName).text = shop
+        findViewById<TextView>(R.id.textShopName).text = shop
         shop_id = intent.getIntExtra("shop_id", -1)
         findQueues()
     }
@@ -31,7 +32,7 @@ class SelectQueueActivity : BaseActivity() {
             return
         }
         if ((answer.get("queues") as JSONObject).length() == 0) {
-            sendToast("server error: Nothing found")
+            showSnackBar("server error: Nothing found")
         } else {
             queues = answer.get("queues") as JSONObject
             val layout = findViewById<LinearLayout>(R.id.layoutQueues)

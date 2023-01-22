@@ -15,26 +15,25 @@ class InfoQueueActivity : BaseActivity() {
     private val path = "info-queue"
     private var handlerThread: HandlerThread? = null
     var queue: String? = null
-    var queue_id: Int? = null
-    var record_id: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        network.initSharedPreferences(this)
         setContentView(R.layout.activity_info_queue)
         queue = intent.getStringExtra("queue")
-        findViewById<TextView>(R.id.textQueueName).text = queue
-        queue_id = intent.getIntExtra("queue_id", -1)
-        val answer = network.doHttpPost(path, JSONObject().put("queue_id", queue_id)) // надо ли куда-то записать user_id?
-        network.checkForError(answer, arrayOf("record_id"), this)
-        record_id = answer.getInt("record_id")
+        findViewById<TextView>(R.id.textShopName).text = queue
+        val queue_id = intent.getIntExtra("queue_id", -1)
+        val answer = network.doHttpPost(path, JSONObject().put("queue_id", queue_id))
+        network.checkForError(answer, arrayOf(), this)
         handlerThread = HandlerThread("updateInfoThread");
         handlerThread!!.start();
         Handler(handlerThread!!.looper).post(::updateInfo);
     }
 
-    fun updateInfo() { // работает ли при выключенном приложении?
-        val answer = network.doHttpGet(path, listOf("record_id" to record_id.toString(), "queue_id" to queue_id.toString()))
+    fun updateInfo() {
+        val answer = network.doHttpGet(path, listOf("check_status" to false.toString()))
         if (network.checkForError(answer, arrayOf("number", "time", "num_workers"), this)) {
+            Handler(handlerThread!!.looper).postDelayed( ::updateInfo, 3000)
             return
         }
         println(answer)
@@ -58,27 +57,38 @@ class InfoQueueActivity : BaseActivity() {
         }
         if (number == 0) {
             if (network.checkForError(answer, arrayOf("window_name", "status"), this)) {
+                Handler(handlerThread!!.looper).postDelayed( ::updateInfo, 3000)
                 return
             }
-            // послать уведомление и закончить таймер и запустить таймер про окончание
-            Handler(handlerThread!!.looper).post(::updateInfoEnd)
+            val status = answer.getString("status")
+            if (status == "WORK") {
+                val title = "Your turn!"
+                val text = "Your window is " + answer.getString("window_name")
+                showDialog(title, text)
+                val ntfc_id = showNotification(title, text, intent=Intent(this, InfoQueueActivity::class.java))
+                Handler(handlerThread!!.looper).post { updateInfoEnd(ntfc_id) }
+            } else {
+                showSnackBar("error: your status=$status")
+                Handler(handlerThread!!.looper).postDelayed( ::updateInfo, 3000)
+            }
+            return
         }
         Handler(handlerThread!!.looper).postDelayed( ::updateInfo, 3000)
     }
-    fun updateInfoEnd() {
-        val answer = network.doHttpGet(path, listOf("is_end" to true.toString(), "record_id" to record_id.toString()))
-        if (network.checkForError(answer, arrayOf("is_end"), this)) {
+    fun updateInfoEnd(ntfc_id: Int?) {
+        val answer = network.doHttpGet(path, listOf("check_status" to true.toString()))
+        if (network.checkForError(answer, arrayOf("status"), this)) {
             return
         }
-        if (answer.getBoolean("is_end")) {
+        val status = answer.getString("status")
+        if (status == "COMPLITED") {
             handlerThread!!.quitSafely();
-            val intent = Intent(this, SelectQueueActivity::class.java)
+            val intent = Intent(this, RateQueueActivity::class.java)
+            showNotification("Thank you for using our app", "Please rate the service", ntfc_id, intent)
             intent.putExtra("queue", queue)
-            intent.putExtra("queue_id", queue_id)
-            intent.putExtra("record_id", record_id)
             startActivity(intent)
         } else {
-            Handler(handlerThread!!.looper).postDelayed( ::updateInfoEnd, 3000)
+            Handler(handlerThread!!.looper).postDelayed( { updateInfoEnd(ntfc_id) }, 3000)
         }
     }
 }

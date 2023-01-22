@@ -3,6 +3,7 @@ package DataBase;
 import org.json.JSONObject;
 import org.postgresql.util.PSQLException;
 
+import javax.swing.plaf.nimbus.State;
 import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,9 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PostgreSQLController {
-    public static Connection conn;
-    public static Statement stat;
-    public static ResultSet rs;
+    static Connection conn;
 
     public static void Conn() {
         try {
@@ -37,7 +36,6 @@ public class PostgreSQLController {
         Conn();
         Map<String, Integer> shops = new HashMap<>();
         try {
-            stat = conn.createStatement();
             String sql = "select shop_name as name, shop_id as id from shops, queues where shop_name like ? and " +
                     "shop_id=owner_shop_id order by shop_name";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -48,7 +46,6 @@ public class PostgreSQLController {
             }
             rs.close();
             statement.close();
-            stat.close();
         } catch (SQLException e) {
             System.out.println("Database findShops: " + e);
         }
@@ -60,7 +57,6 @@ public class PostgreSQLController {
         Conn();
         Map<String, Integer> queues = new HashMap<>();
         try {
-            stat = conn.createStatement();
             String sql = "select queue_name as name, queue_id as id from queues where owner_shop_id=? order by number";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, shop_id);
@@ -70,7 +66,6 @@ public class PostgreSQLController {
             }
             rs.close();
             statement.close();
-            stat.close();
         } catch (SQLException e) {
             System.out.println("Database findQueues: " + e);
         }
@@ -82,7 +77,6 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            stat = conn.createStatement();
             String sql = "insert into queue_users(user_id, queue_id, record_name) " +
                     "values (?, ?, ?) returning record_id";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -98,7 +92,6 @@ public class PostgreSQLController {
             answer.put("record_id", rs.getInt("record_id"));
             rs.close();
             statement.close();
-            stat.close();
         } catch (SQLException e) {
             System.out.println("Database addUserToQueue: " + e);
         }
@@ -110,7 +103,6 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            stat = conn.createStatement();
             String sql = "select count(*) as number from queue_users " +
                     "where queue_id=? and status='WAIT' and record_id<=?";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -122,7 +114,6 @@ public class PostgreSQLController {
             answer.put("number", number);
             rs.close();
             statement.close();
-            stat.close();
             answer.put("time", -1);
             /* рпедсказание времени
             stat = conn.createStatement();
@@ -150,7 +141,6 @@ public class PostgreSQLController {
             answer.put("num_workers", rs.getInt("num_workers"));
             rs.close();
             statement.close();
-            stat.close();
             if (number == 0) {
                 sql = "select status, window_name from queue_users, queue_workers " +
                         "where queue_users.record_id=? and queue_users.worker_user_id=queue_workers.worker_user_id";
@@ -162,8 +152,65 @@ public class PostgreSQLController {
                 answer.put("window_name", rs.getString("window_name"));
                 rs.close();
                 statement.close();
-                stat.close();
             }
+        } catch (SQLException e) {
+            System.out.println("Database getInfoUserInQueue: " + e);
+        }
+        CloseDB();
+        return answer;
+    }
+
+    public JSONObject checkUserStatus(Integer record_id) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "select status from queue_users where record_id=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, record_id);
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+            answer.put("status", rs.getString("status"));
+            rs.close();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println("Database checkUserStatus: " + e);
+        }
+        CloseDB();
+        return answer;
+    }
+
+    public void rateQueue(Integer record_id, Float rating) {
+        Conn();
+        try {
+            String sql = "update queue_users set rating=? where record_id=?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setFloat(1, rating);
+            statement.setInt(2, record_id);
+            statement.execute();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println("Database rateQueue: " + e);
+        }
+        CloseDB();
+    }
+    public JSONObject checkUserInQueue(Integer user_id) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "select record_id, queue_id from queue_users " +
+                    "where user_id=? and status='WAIT'";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, user_id);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                answer.put("record_id", rs.getInt("record_id"));
+                answer.put("queue_id", rs.getInt("queue_id"));
+                if (rs.next()) {
+                    System.out.println("DataBase checkUserInQueue error: too many records for one user");
+                }
+            }
+            rs.close();
+            statement.close();
         } catch (SQLException e) {
             System.out.println("Database getInfoUserInQueue: " + e);
         }
@@ -175,14 +222,12 @@ public class PostgreSQLController {
         int status = 200;
         try {
             Conn();
-            stat = conn.createStatement();
             String sql = "INSERT INTO users(login, password) VALUES (?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, login);
             statement.setString(2, password);
             statement.execute();
             statement.close();
-            stat.close();
         } catch (PSQLException e) {
             System.out.println(e.getServerErrorMessage()); //добавить определение ошибки повторяющегося логина
             status = 400;
@@ -197,14 +242,12 @@ public class PostgreSQLController {
         int status = 200;
         try {
             Conn();
-            stat = conn.createStatement();
             String sql = "SELECT INTO users(login, password) VALUES (?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, login);
             statement.setString(2, password);
             statement.execute();
             statement.close();
-            stat.close();
         } catch (Exception e) {
             System.out.println(e);
             status = 400;
@@ -220,7 +263,7 @@ public class PostgreSQLController {
         ArrayList<String> names = new ArrayList<String>();
 
         Conn();
-        stat = conn.createStatement();
+        Statement stat = conn.createStatement();
         ResultSet rs = stat.executeQuery("select login from users");
 
         while (rs.next()) {
