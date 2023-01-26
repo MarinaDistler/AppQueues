@@ -16,15 +16,15 @@ class FindShopsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        network.initSharedPreferences(this)
-        setContentView(R.layout.activity_find_shops) // добавить проверку, что он уже стоит в очереди
+        setContentView(R.layout.activity_find_shops)
+        checkUserInQueue()
     }
 
     fun scanQr(view: View) {
         //??
     }
     fun findShop(view: View) {
-        val name = findViewById<EditText>(R.id.editTextShopName).text.toString()
+        val name = findViewById<EditText>(R.id.editTextWorkerLogin).text.toString()
         if (name.isEmpty()) {
             showSnackBar("Name can not be empty")
         } else {
@@ -36,7 +36,7 @@ class FindShopsActivity : BaseActivity() {
                 showSnackBar("Nothing found")
             } else {
                 shops = answer.get("shops") as JSONObject
-                val layout = findViewById<LinearLayout>(R.id.layoutQueues)
+                val layout = findViewById<LinearLayout>(R.id.layoutInfo)
                 layout.visibility = View.VISIBLE
                 layout.removeAllViews()
                 for (shop in shops!!.keys()) {

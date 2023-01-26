@@ -17,7 +17,6 @@ class RateQueueActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        network.initSharedPreferences(this)
         setContentView(R.layout.activity_rate_queue)
         queue = intent.getStringExtra("queue")
         findViewById<TextView>(R.id.textQueueName).text = queue

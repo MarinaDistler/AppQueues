@@ -45,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@id/textSelect" />
 
     <EditText
-        android:id="@+id/editTextShopName"
+        android:id="@+id/editTextWorkerLogin"
         android:layout_width="250dp"
         android:layout_height="64dp"
         android:width="10dp"
@@ -99,8 +99,8 @@
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.818"
-        app:layout_constraintLeft_toLeftOf="@id/editTextShopName"
-        app:layout_constraintRight_toRightOf="@id/editTextShopName"
+        app:layout_constraintLeft_toLeftOf="@id/editTextWorkerLogin"
+        app:layout_constraintRight_toRightOf="@id/editTextWorkerLogin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/textPassword" />
 

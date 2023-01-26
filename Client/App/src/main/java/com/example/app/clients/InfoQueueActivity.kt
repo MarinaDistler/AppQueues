@@ -18,13 +18,18 @@ class InfoQueueActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        network.initSharedPreferences(this)
         setContentView(R.layout.activity_info_queue)
         queue = intent.getStringExtra("queue")
         findViewById<TextView>(R.id.textShopName).text = queue
-        val queue_id = intent.getIntExtra("queue_id", -1)
-        val answer = network.doHttpPost(path, JSONObject().put("queue_id", queue_id))
-        network.checkForError(answer, arrayOf(), this)
+        val is_in_queue = intent.getBooleanExtra("is_in_queue", false)
+        if (!is_in_queue) {
+            val queue_id = intent.getIntExtra("queue_id", -1)
+            val answer = network.doHttpPost(
+                path, JSONObject()
+                    .put("queue_id", queue_id).put("queue", queue)
+            )
+            network.checkForError(answer, arrayOf(), this)
+        }
         handlerThread = HandlerThread("updateInfoThread");
         handlerThread!!.start();
         Handler(handlerThread!!.looper).post(::updateInfo);
@@ -67,6 +72,8 @@ class InfoQueueActivity : BaseActivity() {
                 showDialog(title, text)
                 val ntfc_id = showNotification(title, text, intent=Intent(this, InfoQueueActivity::class.java))
                 Handler(handlerThread!!.looper).post { updateInfoEnd(ntfc_id) }
+            } else if (status == "COMPLITED") {
+                Handler(handlerThread!!.looper).post { updateInfoEnd(null) }
             } else {
                 showSnackBar("error: your status=$status")
                 Handler(handlerThread!!.looper).postDelayed( ::updateInfo, 3000)

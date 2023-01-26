@@ -1,5 +1,6 @@
 package DataBase;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.postgresql.util.PSQLException;
 
@@ -36,8 +37,8 @@ public class PostgreSQLController {
         Conn();
         Map<String, Integer> shops = new HashMap<>();
         try {
-            String sql = "select shop_name as name, shop_id as id from shops, queues where shop_name like ? and " +
-                    "shop_id=owner_shop_id order by shop_name";
+            String sql = "select shop_name as name, user_id as id from users, queues where shop_name like ? and " +
+                    "user_id=owner_user_id order by shop_name";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, "%" + name + "%");
             ResultSet rs = statement.executeQuery();
@@ -53,11 +54,31 @@ public class PostgreSQLController {
         return new JSONObject().put("shops", shops);
     }
 
+    public JSONObject findWorker(String login) {
+        Conn();
+        Map<String, Integer> logins = new HashMap<>();
+        try {
+            String sql = "select login from users where login like ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, "%" + login + "%");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                logins.put(rs.getString("login"), 1);
+            }
+            rs.close();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println("Database findWorker: " + e);
+        }
+        CloseDB();
+        return new JSONObject().put("logins", logins);
+    }
+
     public JSONObject findQueues(Integer shop_id) {
         Conn();
         Map<String, Integer> queues = new HashMap<>();
         try {
-            String sql = "select queue_name as name, queue_id as id from queues where owner_shop_id=? order by number";
+            String sql = "select queue_name as name, queue_id as id from queues where owner_user_id=? order by number";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, shop_id);
             ResultSet rs = statement.executeQuery();
@@ -94,6 +115,35 @@ public class PostgreSQLController {
             statement.close();
         } catch (SQLException e) {
             System.out.println("Database addUserToQueue: " + e);
+        }
+        CloseDB();
+        return answer;
+    }
+
+    public JSONObject createQueue(String name, Integer user_id, String[] workers) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "insert into queues(queue_name, owner_user_id) " +
+                    "values (?, ?) returning queue_id";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1,  name);
+            statement.setInt(2, user_id);
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+            Integer queue_id =  rs.getInt("queue_id");
+            rs.close();
+            statement.close();
+            sql = "insert into queue_workers(queue_id, worker_user_id) " +
+                    "select ?, user_id from users where login = any(?)";
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1,  queue_id);
+            Array array = conn.createArrayOf("varchar", workers);
+            statement.setArray(2, array);
+            statement.execute();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println("Database createQueue: " + e);
         }
         CloseDB();
         return answer;
@@ -197,7 +247,7 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "select record_id, queue_id from queue_users " +
+            String sql = "select record_id, queue_id, queue_name from queue_users " +
                     "where user_id=? and status='WAIT'";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, user_id);
@@ -205,6 +255,7 @@ public class PostgreSQLController {
             if (rs.next()) {
                 answer.put("record_id", rs.getInt("record_id"));
                 answer.put("queue_id", rs.getInt("queue_id"));
+                answer.put("queue", rs.getString("queue_name"));
                 if (rs.next()) {
                     System.out.println("DataBase checkUserInQueue error: too many records for one user");
                 }
@@ -219,42 +270,47 @@ public class PostgreSQLController {
     }
 
     public static int addUser(String login, String password) {
-        int status = 200;
+        int user_id = 0;
         try {
             Conn();
-            String sql = "INSERT INTO users(login, password) VALUES (?, ?)";
+            String sql = "INSERT INTO users(login, password) VALUES (?, ?) RETURNING user_id";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, login);
             statement.setString(2, password);
-            statement.execute();
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+            user_id =  rs.getInt("user_id");
+            rs.close();
             statement.close();
         } catch (PSQLException e) {
             System.out.println(e.getServerErrorMessage()); //добавить определение ошибки повторяющегося логина
-            status = 400;
         }
         finally {
             CloseDB();
-            return status;
+            return user_id;
         }
     }
 
     public static int checkUser(String login, String password) {
-        int status = 200;
+        int user_id = 0;
         try {
             Conn();
-            String sql = "SELECT INTO users(login, password) VALUES (?, ?)";
+            String sql = "SELECT user_id from users where login=? and password=?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, login);
             statement.setString(2, password);
-            statement.execute();
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                user_id = rs.getInt("user_id");
+            }
+            rs.close();
             statement.close();
         } catch (Exception e) {
             System.out.println(e);
-            status = 400;
         }
         finally {
             CloseDB();
-            return status;
+            return user_id;
         }
     }
 

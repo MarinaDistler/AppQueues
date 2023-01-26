@@ -21,6 +21,9 @@ public class RateQueueServlet extends BaseServlet {
         Integer record_id = (Integer) session.getAttribute("record_id");
         Float rating = body.getFloat("rating");
         controller.rateQueue(record_id, rating);
+        session.removeAttribute("record_id");
+        session.removeAttribute("queue_id");
+        session.removeAttribute("queue");
         out.println(new JSONObject());
     }
 }

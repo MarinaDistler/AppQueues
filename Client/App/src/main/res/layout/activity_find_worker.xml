@@ -8,55 +8,14 @@
     android:layout_height="match_parent"
     android:background="#9C27B0"
     android:isScrollContainer="false"
-    tools:context=".clients.FindShopsActivity">
-
-    <Button
-        android:id="@+id/button_scan"
-        android:layout_width="265dp"
-        android:layout_height="69dp"
-        android:backgroundTint="@color/teal_700"
-        android:enabled="true"
-        android:onClick="scanQr"
-        android:text="Scan QR-code"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textColorHighlight="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textColorLink="#FFFFFF"
-        android:textSize="20sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.04" />
-
-    <Button
-        android:id="@+id/button_find"
-        android:layout_width="265dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="27dp"
-        android:backgroundTint="@color/teal_700"
-        android:enabled="true"
-        android:onClick="findShop"
-        android:text="Find "
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textColorHighlight="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textColorLink="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextWorkerLogin" />
+    tools:context=".admins.FindWorkerActivity">
 
     <TextView
-        android:id="@+id/textSelect"
+        android:id="@+id/textEnterLofinWorker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
-        android:text="Enter the name"
+        android:layout_marginTop="28dp"
+        android:text="Enter the login of worker:"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textColorHighlight="#FFFFFF"
@@ -65,14 +24,33 @@
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.532"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/button_scan" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_find"
+        android:layout_width="92dp"
+        android:layout_height="54dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/teal_700"
+        android:enabled="true"
+        android:onClick="findWorker"
+        android:text="Find "
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/editTextWorkerLogin"
+        app:layout_constraintTop_toTopOf="@id/editTextWorkerLogin" />
 
     <EditText
         android:id="@+id/editTextWorkerLogin"
-        android:layout_width="320dp"
-        android:layout_height="59dp"
+        android:layout_width="242dp"
+        android:layout_height="54dp"
         android:layout_marginTop="24dp"
         android:width="10dp"
         android:backgroundTint="#00897B"
@@ -87,13 +65,14 @@
         android:textSize="24sp"
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.206"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textSelect" />
+        app:layout_constraintTop_toBottomOf="@id/textEnterLofinWorker" />
 
     <ScrollView
-        android:layout_width="351dp"
-        android:layout_height="345dp"
+        android:id="@+id/scrollView3"
+        android:layout_width="346dp"
+        android:layout_height="523dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="23dp"
         android:layout_marginEnd="30dp"

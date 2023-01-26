@@ -33,10 +33,11 @@ public class InfoQueueServlet extends BaseServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = basicDo(response);
         JSONObject body = readRequest(request);
-        if (checkBody(body, new String[]{"queue_id"}, out)) {
+        if (checkBody(body, new String[]{"queue_id", "queue"}, out)) {
             return;
         }
-        Integer queue_id = Integer.valueOf(body.getInt("queue_id"));
+        Integer queue_id = body.getInt("queue_id");
+        String queue = body.getString("queue");
         HttpSession session = request.getSession();
         if (session.getAttribute("record_id") != null) {
             out.println(new JSONObject());
@@ -46,7 +47,9 @@ public class InfoQueueServlet extends BaseServlet {
                 (String) session.getAttribute("user_name"));
         session.setAttribute("record_id", answer.getInt("record_id"));
         session.setAttribute("queue_id", queue_id);
+        session.setAttribute("queue", queue);
         answer.remove("record_id");
+        answer.remove("queue");
         out.println(answer);
     }
 }

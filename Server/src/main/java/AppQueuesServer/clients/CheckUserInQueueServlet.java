@@ -14,15 +14,23 @@ public class CheckUserInQueueServlet extends BaseServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = basicDo(response);
         HttpSession session = request.getSession();
-        JSONObject answer = new JSONObject().put("is_in_queue", false);
+        JSONObject answer = new JSONObject();
         if (session.getAttribute("record_id") != null) {
-            answer.put("is_in_queue", true);
+            Integer record_id = (Integer) session.getAttribute("record_id");
+            JSONObject info = controller.checkUserStatus(record_id);
+            if (info.getString("status") == "WORK") {
+                answer.put("queue", session.getAttribute("queue"));
+            } else {
+                session.removeAttribute("record_id");
+                session.removeAttribute("queue");
+                session.removeAttribute("queue_id");
+            }
         } else if (session.getAttribute("user_id") != null) {
             JSONObject info = controller.checkUserInQueue((int) session.getAttribute("user_id"));
-            if (info.has("record_id") && info.has("queue_id")) {
+            if (info.has("record_id") && info.has("queue_id") && info.has("queue")) {
                 session.setAttribute("record_id", info.getInt("record_id"));
                 session.setAttribute("queue_id", info.getInt("queue_id"));
-                answer.put("is_in_queue", true);
+                answer.put("queue", info.getString("queue"));
             }
         }
         out.println(answer);

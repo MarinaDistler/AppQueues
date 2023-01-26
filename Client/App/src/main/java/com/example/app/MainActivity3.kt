@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.example.app.admins.CreateQueueActivity
 
 class MainActivity3 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +20,7 @@ class MainActivity3 : AppCompatActivity() {
         startActivity(intent)
     }
     fun goToActivity4Admin(view: View) {
-        val intent = Intent(this, MainActivity4Admin::class.java)
+        val intent = Intent(this, CreateQueueActivity::class.java)
         startActivity(intent)
     }
 }

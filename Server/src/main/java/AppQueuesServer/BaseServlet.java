@@ -22,7 +22,7 @@ public class BaseServlet extends HttpServlet {
     protected boolean checkParameters(HttpServletRequest request, String[] params, PrintWriter out) {
         ArrayList<String> missing_params = new ArrayList<>();
         for (String param : params) {
-            if (request.getParameter(param).isEmpty()) {
+            if (request.getParameter(param) == null) {
                 missing_params.add(param);
             }
         }

@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="@id/textShopName">
 
         <LinearLayout
-            android:id="@+id/layoutQueues"
+            android:id="@+id/layoutInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"

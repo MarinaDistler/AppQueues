@@ -44,18 +44,14 @@ public class HelloServlet extends HttpServlet {
             while ((line = reader.readLine()) != null)
                 jb.append(line);
             JSONObject jsonObject = new JSONObject(jb.toString());
-            int status = controller.addUser(
-                    jsonObject.getString("login"),
-                    jsonObject.getString("password")
-            );
-            if (status != 200) {
-                response.setStatus(status);
-                response.setContentType("application/json");
-                PrintWriter out = response.getWriter();
-                JSONObject jsonObgect = new JSONObject();
-                jsonObgect.put("error", "Логин уже существует");
-                out.println(jsonObgect);
+            String login = jsonObject.getString("login");
+            String password = jsonObject.getString("password");
+            int user_id = controller.checkUser(login, password);
+            if (user_id == 0) {
+                user_id = controller.addUser(login, password);
             }
+            HttpSession session = request.getSession();
+            session.setAttribute("user_id", user_id);
         } catch (Exception e) {
             System.out.println("POST " + e);
         }

@@ -6,18 +6,21 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.DialogFragment
+import com.example.app.clients.InfoQueueActivity
 import com.example.network.Network
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import java.security.AccessController.getContext
 
 
 class BaseDialogFragment(val title: String, val text: String) : DialogFragment() {
@@ -37,8 +40,10 @@ open class BaseActivity : AppCompatActivity() {
     var channel_id: String? = null
     var notificationManager: NotificationManager? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        network.initSharedPreferences(this)
         channel_id = getString(R.string.app_name)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val importance = NotificationManager.IMPORTANCE_MAX
@@ -103,7 +108,13 @@ open class BaseActivity : AppCompatActivity() {
         return id
     }
 
-    fun createButton(activity: Activity, text: String, function: (view: View) -> Unit, layout: LinearLayout) {
+    fun dpToPx(dp: Int): Int {
+        val displayMetrics: DisplayMetrics = resources.displayMetrics
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT))
+    }
+
+    fun createButton(activity: Activity, text: String, function: (view: View) -> Unit,
+                     layout: LinearLayout, width: Int? = null) : Button {
         val button = Button(activity)
         button.text = text
         button.setOnClickListener { view_button ->
@@ -112,6 +123,63 @@ open class BaseActivity : AppCompatActivity() {
         button.isAllCaps = false
         button.backgroundTintList = ColorStateList.valueOf(getColor(R.color.teal_700))
         button.setTextColor(Color.WHITE)
+        if (width != null) {
+            button.width = width
+        }
         layout.addView(button)
+        return button
+    }
+
+    fun createTextView(activity: Activity, text: String, layout: LinearLayout, width: Int?) : TextView {
+        val textView = TextView(activity)
+        textView.text = text
+        textView.isAllCaps = false
+        textView.setTextColor(Color.WHITE)
+        if (width != null) {
+            textView.width = width
+        }
+        textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+        layout.addView(textView)
+        return textView
+    }
+
+    fun createTextWithDelete(activity: Activity, text: String, function: (view: View) -> Unit, layout: LinearLayout) {
+        val lin_layout = LinearLayout(activity)
+        lin_layout.orientation = LinearLayout.HORIZONTAL
+        createTextView(activity, text, lin_layout, width=layout.width - dpToPx(50))
+        createButton(activity, "X", function, lin_layout, width=dpToPx(50))
+        layout.addView(lin_layout)
+    }
+
+    fun checkUserInQueue() {
+        val path = "check-user-in-queue"
+        val answer = network.doHttpGet(path)
+        if (network.checkForError(answer, arrayOf(), this)) {
+            return
+        }
+        if (!answer.has("queue")) {
+            return
+        }
+        val intent = Intent(this, InfoQueueActivity::class.java)
+        intent.putExtra("queue", answer.getString("queue"))
+        intent.putExtra("is_in_queue", true)
+        startActivity(intent)
+    }
+
+    fun isRegistered() : Boolean {
+        val path = "check-registered"
+        val answer = network.doHttpGet(path)
+        if (network.checkForError(answer, arrayOf("is_registered"), this)) {
+            return false
+        }
+        return answer.getBoolean("is_registered")
+    }
+
+    fun checkRegistered() {
+        if (!isRegistered()) {
+            val intent = Intent(this, MainActivity2::class.java)
+            startActivity(intent)
+        }
     }
 }
+

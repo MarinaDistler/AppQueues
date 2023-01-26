@@ -69,6 +69,27 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".admins.CreateQueueActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".admins.EditQueueActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".admins.FindWorkerActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".clients.FindShopsActivity"
             android:exported="false">
             <meta-data
