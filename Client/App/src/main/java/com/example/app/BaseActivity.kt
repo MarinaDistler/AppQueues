@@ -130,7 +130,7 @@ open class BaseActivity : AppCompatActivity() {
         return button
     }
 
-    fun createTextView(activity: Activity, text: String, layout: LinearLayout, width: Int?) : TextView {
+    fun createTextView(activity: Activity, text: String, layout: LinearLayout, width: Int?=null) : TextView {
         val textView = TextView(activity)
         textView.text = text
         textView.isAllCaps = false

@@ -112,6 +112,7 @@ public class PostgreSQLController {
                 if (answer_mode == ANSWER_MODE.ONE_ANSWER) {
                     answer.put("error", "no answer from the DataBase");
                 }
+                resultSet.close();
                 statement.close();
                 return answer;
             }
@@ -120,6 +121,7 @@ public class PostgreSQLController {
             }
             if (resultSet.next()) {
                 answer.put("error", "too many rows in answer from the DataBase");
+                resultSet.close();
                 statement.close();
                 return answer;
             }
@@ -229,7 +231,20 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "insert into queues(queue_name, owner_user_id) " +
+            String sql = "select count(*) as number from queues where queue_name=? and owner_user_id=?";
+            JSONObject info = doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(name, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{RtrngOf("number", TYPES.INT)},
+                    ANSWER_MODE.ONE_ANSWER, new JSONObject());
+            if (checkForError(info)) {
+                CloseDB();
+                return info;
+            }
+            if (info.getInt("number") > 0) {
+                CloseDB();
+                return answer.put("error", "You already have queue with this name");
+            }
+            sql = "insert into queues(queue_name, owner_user_id) " +
                     "values (?, ?) returning queue_id";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(name, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
@@ -255,11 +270,22 @@ public class PostgreSQLController {
         return answer;
     }
 
-    public JSONObject updateQueue(Integer queue_id, String name, String[] workers) {
+    public JSONObject updateQueue(String old_name, Integer user_id, String name, String[] workers) {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "update queues set queue_name=? where queue_id=?";
+            String sql = "select queue_id from queues " +
+                    "where queue_name=? and owner_user_id=?";
+            JSONObject info = doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(old_name, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{RtrngOf("queue_id", TYPES.INT)},
+                    ANSWER_MODE.ONE_ANSWER, new JSONObject());
+            if (checkForError(info)) {
+                CloseDB();
+                return info;
+            }
+            Integer queue_id = info.getInt("queue_id");
+            sql = "update queues set queue_name=? where queue_id=?";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(name, TYPES.STRING), PrmtrOf(queue_id, TYPES.INT)},
                     new Returning[]{},
@@ -270,7 +296,7 @@ public class PostgreSQLController {
             }
             sql = "select worker_user_id as user_id from queue_workers " +
                     "where queue_id=? and delete_time==null";
-            JSONObject info = doSql(conn.prepareStatement(sql),
+            info = doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(answer.getInt("queue_id"), TYPES.INT)},
                     new Returning[]{RtrngOf("user_id", TYPES.INT)},
                     ANSWER_MODE.MANY_ANSWER, new JSONObject());
@@ -319,28 +345,20 @@ public class PostgreSQLController {
         return answer;
     }
 
-    public JSONObject infoQueue(Integer queue_id) {
+    public JSONObject infoQueue(String queue_name, Integer user_id) {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "select worker_user_id as workers from queue_workers " +
-                    "where queue_id=? and delete_time==null";
+            String sql = "select login as workers from queue_workers, queues, users " +
+                    "where queue_name=? and owner_user_id=? and user_id=worker_user_id and " +
+                    "queues.queue_id=queue_workers.queue_id and delete_time is null";
             doSql(conn.prepareStatement(sql),
-                    new Parameter[]{PrmtrOf(queue_id, TYPES.INT)},
-                    new Returning[]{RtrngOf("user_id", TYPES.INT)},
+                    new Parameter[]{PrmtrOf(queue_name, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{RtrngOf("workers", TYPES.INT)},
                     ANSWER_MODE.MANY_ANSWER, answer);
-            if (checkForError(answer)) {
-                CloseDB();
-                return answer;
-            }
-            sql = "select queue_name from queues where queue_id=?";
-            doSql(conn.prepareStatement(sql),
-                    new Parameter[]{PrmtrOf(queue_id, TYPES.INT)},
-                    new Returning[]{RtrngOf("queue_name", TYPES.STRING)},
-                    ANSWER_MODE.ONE_ANSWER, answer);
             checkForError(answer);
         } catch (SQLException e) {
-            System.out.println("Database createQueue: " + e);
+            System.out.println("Database infoQueue: " + e);
             answer.put("error", e);
         }
         CloseDB();

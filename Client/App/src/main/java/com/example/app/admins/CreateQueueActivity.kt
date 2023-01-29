@@ -19,12 +19,23 @@ import org.json.JSONObject
 
 class CreateQueueActivity : BaseActivity() {
     val path = "edit-queue"
+    var is_new: Boolean = true
+    var queue_name: String? = null
+    var workers = mutableListOf<String>()
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
     { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val result_intent: Intent? = result.data
             val worker = result_intent!!.getStringExtra("worker_login")
-            createTextWithDelete(this, worker!!, ::deleteWorker, findViewById<LinearLayout>(R.id.layout_workers))
+            if (workers.contains(worker)) {
+                showSnackBar("You already have this worker in this queue!")
+            } else {
+                workers.add(worker!!)
+                createTextWithDelete(
+                    this, worker!!, ::deleteWorker,
+                    findViewById<LinearLayout>(R.id.layout_workers)
+                )
+            }
         }
     }
 
@@ -33,11 +44,20 @@ class CreateQueueActivity : BaseActivity() {
         network.initSharedPreferences(this)
         setContentView(R.layout.activity_create_queue)
         checkRegistered()
-        val is_new = intent.getBooleanExtra("is_new", true)
-        /*if (!is_new) {
-            val answer = network.doHttpGet(path, )
-            if (!network.checkForError(answer, arrayOf(), this))
-        }*/
+        is_new = intent.getBooleanExtra("is_new", true)
+        if (!is_new) {
+            queue_name = intent.getStringExtra("queue_name")
+            val answer = network.doHttpGet(path, listOf("queue_name" to queue_name!!))
+            if (network.checkForError(answer, arrayOf("workers"), this)) {
+                return
+            }
+            findViewById<EditText>(R.id.editTextQueueName).setText(queue_name!!)
+            workers = answer.getJSONArray("workers") as MutableList<String>
+            val layout = findViewById<LinearLayout>(R.id.layout_workers)
+            for (worker in workers) {
+                createTextWithDelete(this, worker, ::deleteWorker, layout)
+            }
+        }
     }
 
     fun addWorker(view: View) {
@@ -46,27 +66,26 @@ class CreateQueueActivity : BaseActivity() {
     }
 
     fun deleteWorker(view: View) {
-        findViewById<LinearLayout>(R.id.layout_workers).removeView(view.parent as View)
+        val parent = view.parent as LinearLayout
+        val worker = (parent[0] as TextView).text
+        workers.remove(worker)
+        findViewById<LinearLayout>(R.id.layout_workers).removeView(parent)
     }
 
     fun saveQueue(view: View) {
+        checkRegistered()
         val name = findViewById<EditText>(R.id.editTextQueueName).text.toString()
         if (name.isEmpty()) {
             showSnackBar("Name can not be empty")
             return
         }
-        val workers_group = findViewById<LinearLayout>(R.id.layout_workers).children
-        val workers = JSONArray()
-        for (i in 0..workers_group.count() - 1) {
-            val layout = workers_group.elementAt(i) as LinearLayout
-            workers.put((layout.get(0) as TextView).text.toString())
-        }
         val answer = network.doHttpPost(path, JSONObject()
-            .put("name", name).put("workers", workers).put("new", true))
+            .put("name", name).put("workers", JSONArray(workers)).put("new", true))
         if (!network.checkForError(answer, arrayOf(), this)) {
             showSnackBar("Creation succeeded!")
             // finish()
             val intent = Intent(this, EditQueueActivity::class.java)
+            intent.putExtra("queue_name", name)
             startActivity(intent)
         }
     }

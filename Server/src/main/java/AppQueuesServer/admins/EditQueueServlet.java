@@ -11,6 +11,21 @@ import java.io.PrintWriter;
 
 @WebServlet(name = "EditQueueServlet", value = "/edit-queue")
 public class EditQueueServlet extends BaseServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter out = basicDo(response);
+        if (checkParameters(request, new String[]{"queue_name"}, out)) {
+            return;
+        }
+        String queue_name = request.getParameter("queue_name");
+        HttpSession session = request.getSession();
+        if (checkSession(session, new String[]{"user_id"}, out)) {
+            return;
+        }
+        Integer user_id = (Integer) session.getAttribute("user_id");
+        JSONObject answer = controller.infoQueue(queue_name, user_id);
+        out.println(answer);
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = basicDo(response);
         JSONObject body = readRequest(request);
@@ -33,11 +48,11 @@ public class EditQueueServlet extends BaseServlet {
         if (is_new) {
             answer = controller.createQueue(name, user_id, workers);
         } else {
-            if (checkBody(body, new String[]{"queue_id"}, out)) {
+            if (checkBody(body, new String[]{"old_name"}, out)) {
                 return;
             }
-            Integer queue_id = body.getInt("queue_id");
-            answer = controller.updateQueue(queue_id, name, workers);
+            String old_name = body.getString("old_name");
+            answer = controller.updateQueue(old_name, user_id, name, workers);
         }
         out.println(answer);
     }

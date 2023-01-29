@@ -24,12 +24,23 @@ class EditQueueActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         network.initSharedPreferences(this)
-        setContentView(R.layout.activity_create_queue)
+        setContentView(R.layout.activity_edit_queue)
         checkRegistered()
         queue_name = intent.getStringExtra("queue_name")
+        val answer = network.doHttpGet(path, listOf("queue_name" to queue_name!!))
+        if (network.checkForError(answer, arrayOf("workers"), this)) {
+            return
+        }
+        findViewById<TextView>(R.id.textNameQueueValue).text = queue_name
+        val workers = answer.getJSONArray("workers")
+        val layout = findViewById<LinearLayout>(R.id.layout_workers)
+        for (i in 0..workers.length() - 1) {
+            createTextView(this, workers.getString(i), layout)
+        }
     }
 
     fun editQueue(view: View) {
+        checkRegistered()
         val intent = Intent(this, CreateQueueActivity::class.java)
         intent.putExtra("is_new", false)
         intent.putExtra("queue_name", queue_name)
