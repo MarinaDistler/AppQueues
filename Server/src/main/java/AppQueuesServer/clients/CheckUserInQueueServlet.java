@@ -27,10 +27,10 @@ public class CheckUserInQueueServlet extends BaseServlet {
             }
         } else if (session.getAttribute("user_id") != null) {
             JSONObject info = controller.checkUserInQueue((int) session.getAttribute("user_id"));
-            if (info.has("record_id") && info.has("queue_id") && info.has("queue")) {
+            if (info.has("record_id") && info.has("queue_id") && info.has("queue_name")) {
                 session.setAttribute("record_id", info.getInt("record_id"));
                 session.setAttribute("queue_id", info.getInt("queue_id"));
-                answer.put("queue", info.getString("queue"));
+                answer.put("queue", info.getString("queue_name"));
             }
         }
         out.println(answer);

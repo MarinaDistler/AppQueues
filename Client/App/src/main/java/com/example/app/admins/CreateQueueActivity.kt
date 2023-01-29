@@ -33,6 +33,11 @@ class CreateQueueActivity : BaseActivity() {
         network.initSharedPreferences(this)
         setContentView(R.layout.activity_create_queue)
         checkRegistered()
+        val is_new = intent.getBooleanExtra("is_new", true)
+        /*if (!is_new) {
+            val answer = network.doHttpGet(path, )
+            if (!network.checkForError(answer, arrayOf(), this))
+        }*/
     }
 
     fun addWorker(view: View) {
@@ -60,7 +65,9 @@ class CreateQueueActivity : BaseActivity() {
             .put("name", name).put("workers", workers).put("new", true))
         if (!network.checkForError(answer, arrayOf(), this)) {
             showSnackBar("Creation succeeded!")
-            finish()
+            // finish()
+            val intent = Intent(this, EditQueueActivity::class.java)
+            startActivity(intent)
         }
     }
 }

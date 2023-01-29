@@ -8,11 +8,11 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.app.BaseActivity
 import com.example.app.R
+import org.json.JSONArray
 import org.json.JSONObject
 
 class FindShopsActivity : BaseActivity() {
     val path = "find-shops"
-    var shops: JSONObject? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,18 +29,18 @@ class FindShopsActivity : BaseActivity() {
             showSnackBar("Name can not be empty")
         } else {
             val answer = network.doHttpGet(path, listOf("name" to name))
-            if (network.checkForError(answer, arrayOf("shops"), this)) {
+            if (network.checkForError(answer, arrayOf("shop_names"), this)) {
                 return
             }
-            if ((answer.get("shops") as JSONObject).length() == 0) {
+            if ((answer.get("shop_names") as JSONArray).length() == 0) {
                 showSnackBar("Nothing found")
             } else {
-                shops = answer.get("shops") as JSONObject
+                val shops = answer.get("shop_names") as JSONArray
                 val layout = findViewById<LinearLayout>(R.id.layoutInfo)
                 layout.visibility = View.VISIBLE
                 layout.removeAllViews()
-                for (shop in shops!!.keys()) {
-                    createButton(this, shop, ::joinShop, layout)
+                for (i in 0.. shops.length() - 1) {
+                    createButton(this, shops.getString(i), ::joinShop, layout)
                 }
             }
         }
@@ -49,7 +49,6 @@ class FindShopsActivity : BaseActivity() {
         val shop = (view as Button).text
         val intent = Intent(this, SelectQueueActivity::class.java)
         intent.putExtra("shop", shop)
-        intent.putExtra("shop_id", shops!![shop as String] as Int)
         startActivity(intent)
     }
 }

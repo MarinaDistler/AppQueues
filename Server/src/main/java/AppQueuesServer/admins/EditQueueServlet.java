@@ -32,6 +32,12 @@ public class EditQueueServlet extends BaseServlet {
         JSONObject answer = new JSONObject();
         if (is_new) {
             answer = controller.createQueue(name, user_id, workers);
+        } else {
+            if (checkBody(body, new String[]{"queue_id"}, out)) {
+                return;
+            }
+            Integer queue_id = body.getInt("queue_id");
+            answer = controller.updateQueue(queue_id, name, workers);
         }
         out.println(answer);
     }

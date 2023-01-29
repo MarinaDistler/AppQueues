@@ -13,11 +13,11 @@ import java.io.PrintWriter;
 public class FindQueuesServlet extends BaseServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = basicDo(response);
-        if (checkParameters(request, new String[]{"shop_id"}, out)) {
+        if (checkParameters(request, new String[]{"shop"}, out)) {
             return;
         }
-        Integer shop_id = Integer.valueOf(request.getParameter("shop_id"));
-        JSONObject answer = controller.findQueues(shop_id);
+        String shop_name = request.getParameter("shop");
+        JSONObject answer = controller.findQueues(shop_name);
         out.println(answer);
     }
 }

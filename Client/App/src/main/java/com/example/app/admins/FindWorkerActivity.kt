@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.app.BaseActivity
 import com.example.app.R
+import org.json.JSONArray
 import org.json.JSONObject
 
 class FindWorkerActivity : BaseActivity() {
@@ -29,15 +30,15 @@ class FindWorkerActivity : BaseActivity() {
             if (network.checkForError(answer, arrayOf("logins"), this)) {
                 return
             }
-            if ((answer.get("logins") as JSONObject).length() == 0) {
+            if ((answer.get("logins") as JSONArray).length() == 0) {
                 showSnackBar("Nothing found")
             } else {
-                val logins = answer.get("logins") as JSONObject
+                val logins = answer.get("logins") as JSONArray
                 val layout = findViewById<LinearLayout>(R.id.layoutInfo)
                 layout.visibility = View.VISIBLE
                 layout.removeAllViews()
-                for (login in logins!!.keys()) {
-                    createButton(this, login, ::selectWorker, layout)
+                for (i in 0..logins.length() - 1) {
+                    createButton(this, logins.getString(i), ::selectWorker, layout)
                 }
             }
         }
