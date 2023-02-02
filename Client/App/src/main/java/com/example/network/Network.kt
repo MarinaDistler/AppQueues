@@ -48,8 +48,11 @@ class Network () {
             editor.putStringSet("Cookie", HashSet(response["Set-Cookie"].toMutableList()))
             editor.commit()
         }
+        println(response)
+        if (!response.header(Headers.CONTENT_TYPE).contains("application/json;charset=UTF-8")) {
+            return JSONObject().put("error", "content type of answer is not JSON")
+        }
         if (!response.body().isEmpty()) {
-            println(response)
             return JSONObject(response.body().toByteArray().decodeToString())
         }
         return JSONObject()
@@ -73,8 +76,11 @@ class Network () {
             editor.putStringSet("Cookie", HashSet(response["Set-Cookie"].toMutableList()))
             editor.commit()
         }
+        println(response)
+        if (!response.header(Headers.CONTENT_TYPE).contains("application/json;charset=UTF-8")) {
+            return JSONObject().put("error", "content type of answer is not JSON")
+        }
         if (!response.body().isEmpty()) {
-            println(response)
             return JSONObject(response.body().toByteArray().decodeToString())
         }
         return JSONObject()

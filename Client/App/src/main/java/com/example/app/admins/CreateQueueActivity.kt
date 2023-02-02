@@ -22,7 +22,7 @@ class CreateQueueActivity : BaseActivity() {
     var is_new: Boolean = true
     var queue_name: String? = null
     var workers = mutableListOf<String>()
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+    val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
     { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val result_intent: Intent? = result.data
@@ -83,9 +83,7 @@ class CreateQueueActivity : BaseActivity() {
             .put("name", name).put("workers", JSONArray(workers)).put("new", true))
         if (!network.checkForError(answer, arrayOf(), this)) {
             showSnackBar("Creation succeeded!")
-            // finish()
-            val intent = Intent(this, EditQueueActivity::class.java)
-            intent.putExtra("queue_name", name)
+            val intent = Intent(this, ViewAllQueuesActivity::class.java)
             startActivity(intent)
         }
     }

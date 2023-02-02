@@ -3,39 +3,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#9C27B0"
     android:isScrollContainer="false"
-    tools:context=".clients.SelectQueuesActivity">
+    tools:context=".admins.ViewAllQueuesActivity">
 
     <TextView
-        android:id="@+id/textSelect"
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="90dp"
-        android:text="Select the queue"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textColorHighlight="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textColorLink="#FFFFFF"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/textShopName" />
-
-    <TextView
-        android:id="@+id/textShopName"
+        android:id="@+id/textYourQueues"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="90dp"
-        android:text="Shop name"
+        android:text="Your queues"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textColorHighlight="#FFFFFF"
@@ -50,24 +31,46 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="337dp"
-        android:layout_height="566dp"
+        android:id="@+id/scrollView4"
+        android:layout_width="350dp"
+        android:layout_height="500dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="30dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textSelect">
+        app:layout_constraintTop_toBottomOf="@+id/textYourQueues">
 
         <LinearLayout
             android:id="@+id/layout_queues"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="invisible" />
+            android:visibility="visible"
+            tools:visibility="visible" />
     </ScrollView>
+
+    <Button
+        android:id="@+id/button_create"
+        android:layout_width="265dp"
+        android:layout_height="69dp"
+        android:layout_marginTop="13dp"
+        android:backgroundTint="@color/teal_700"
+        android:enabled="true"
+        android:onClick="toCreateQueue"
+        android:text="Create a queue"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.479"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView4" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

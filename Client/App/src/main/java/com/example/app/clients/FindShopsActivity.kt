@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import com.example.app.BaseActivity
 import com.example.app.R
 import org.json.JSONArray
-import org.json.JSONObject
 
 class FindShopsActivity : BaseActivity() {
     val path = "find-shops"
@@ -36,7 +35,7 @@ class FindShopsActivity : BaseActivity() {
                 showSnackBar("Nothing found")
             } else {
                 val shops = answer.get("shop_names") as JSONArray
-                val layout = findViewById<LinearLayout>(R.id.layoutInfo)
+                val layout = findViewById<LinearLayout>(R.id.layout_queues)
                 layout.visibility = View.VISIBLE
                 layout.removeAllViews()
                 for (i in 0.. shops.length() - 1) {

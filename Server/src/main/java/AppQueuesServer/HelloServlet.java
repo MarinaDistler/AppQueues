@@ -10,7 +10,7 @@ import jakarta.servlet.annotation.*;
 import DataBase.PostgreSQLController;
 
 @WebServlet(name = "helloServlet", value = "/hello-servlet")
-public class HelloServlet extends HttpServlet {
+public class HelloServlet extends BaseServlet {
     private String message;
     private PostgreSQLController controller;
 
@@ -37,6 +37,7 @@ public class HelloServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("POST");
         StringBuilder jb = new StringBuilder();
+        PrintWriter out = basicDo(response);
 
         try {
             String line;
@@ -55,5 +56,6 @@ public class HelloServlet extends HttpServlet {
         } catch (Exception e) {
             System.out.println("POST " + e);
         }
+        out.println(new JSONObject());
     }
 }

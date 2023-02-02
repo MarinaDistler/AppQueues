@@ -168,6 +168,24 @@ public class PostgreSQLController {
         return answer;
     }
 
+    public JSONObject viewAllQueues(Integer user_id) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "select queue_name as queues from queues where owner_user_id=?";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{RtrngOf("queues", TYPES.STRING)},
+                    ANSWER_MODE.MANY_ANSWER, answer);
+            checkForError(answer);
+        } catch (SQLException e) {
+            System.out.println("Database viewAllQueues: " + e);
+            answer.put("error", e);
+        }
+        CloseDB();
+        return answer;
+    }
+
     public JSONObject findWorker(String login) {
         Conn();
         JSONObject answer = new JSONObject();
@@ -254,11 +272,12 @@ public class PostgreSQLController {
                 CloseDB();
                 return answer;
             }
+            Integer queue_id = answer.getInt("queue_id");
             sql = "insert into queue_workers(queue_id, worker_user_id) " +
                     "select ?, user_id from users where login = any(?)";
             Array array = conn.createArrayOf("varchar", workers);
             doSql(conn.prepareStatement(sql),
-                    new Parameter[]{PrmtrOf(answer.getInt("queue_id"), TYPES.INT), PrmtrOf(array, TYPES.ARRAY)},
+                    new Parameter[]{PrmtrOf(queue_id, TYPES.INT), PrmtrOf(array, TYPES.ARRAY)},
                     new Returning[]{},
                     ANSWER_MODE.NO_ANSWER, answer);
             checkForError(answer);
@@ -297,7 +316,7 @@ public class PostgreSQLController {
             sql = "select worker_user_id as user_id from queue_workers " +
                     "where queue_id=? and delete_time==null";
             info = doSql(conn.prepareStatement(sql),
-                    new Parameter[]{PrmtrOf(answer.getInt("queue_id"), TYPES.INT)},
+                    new Parameter[]{PrmtrOf(queue_id, TYPES.INT)},
                     new Returning[]{RtrngOf("user_id", TYPES.INT)},
                     ANSWER_MODE.MANY_ANSWER, new JSONObject());
             if (checkForError(info)) {
@@ -345,16 +364,54 @@ public class PostgreSQLController {
         return answer;
     }
 
+    public JSONObject deleteQueue(String queue_name, Integer user_id) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "select queue_id from queues " +
+                    "where queue_name=? and owner_user_id=?";
+            JSONObject info = doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(queue_name, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{RtrngOf("queue_id", TYPES.INT)},
+                    ANSWER_MODE.ONE_ANSWER, new JSONObject());
+            if (checkForError(info)) {
+                CloseDB();
+                return info;
+            }
+            Integer queue_id = info.getInt("queue_id");
+            sql = "update queues set delete_time=now() where queue_id=?";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(queue_id, TYPES.INT)},
+                    new Returning[]{},
+                    ANSWER_MODE.NO_ANSWER, answer);
+            if (checkForError(answer)) {
+                CloseDB();
+                return answer;
+            }
+            sql = "update queue_workers set delete_time=now() where queue_id=?";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(queue_id, TYPES.INT)},
+                    new Returning[]{},
+                    ANSWER_MODE.NO_ANSWER, answer);
+            checkForError(answer);
+        } catch (SQLException e) {
+            System.out.println("Database deleteQueue: " + e);
+            answer.put("error", e);
+        }
+        CloseDB();
+        return answer;
+    }
+
     public JSONObject infoQueue(String queue_name, Integer user_id) {
         Conn();
         JSONObject answer = new JSONObject();
         try {
             String sql = "select login as workers from queue_workers, queues, users " +
                     "where queue_name=? and owner_user_id=? and user_id=worker_user_id and " +
-                    "queues.queue_id=queue_workers.queue_id and delete_time is null";
+                    "queues.queue_id=queue_workers.queue_id and queue_workers.delete_time is null";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(queue_name, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
-                    new Returning[]{RtrngOf("workers", TYPES.INT)},
+                    new Returning[]{RtrngOf("workers", TYPES.STRING)},
                     ANSWER_MODE.MANY_ANSWER, answer);
             checkForError(answer);
         } catch (SQLException e) {
@@ -379,11 +436,10 @@ public class PostgreSQLController {
                 CloseDB();
                 return answer;
             }
-            Integer number = answer.getInt("number");
             answer.put("time", -1);
             /* рпедсказание времени
             sql = "select count(*) as num_req, avg(end_work_time-start_work_time) as mean_time " +
-                    "from queue_users where queue_id=? and status='COMPLITED'";
+                    "from queue_users where queue_id=? and status='COMPLETED'";
             info = doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(queue_id, TYPES.INT)},
                     new Returnings[]{new Returnings("num_req", TYPES.INT), new Returnings("mean_time", TYPES.INT)},
@@ -409,16 +465,15 @@ public class PostgreSQLController {
                 CloseDB();
                 return answer;
             }
-            if (number == 0) {
-                sql = "select status, window_name from queue_users, queue_workers " +
-                        "where queue_users.record_id=? and queue_users.worker_user_id=queue_workers.worker_user_id";
-                doSql(conn.prepareStatement(sql),
-                        new Parameter[]{PrmtrOf(record_id, TYPES.INT)},
-                        new Returning[]{RtrngOf("status", TYPES.STRING),
-                                RtrngOf("window_name", TYPES.STRING)},
-                        ANSWER_MODE.ONE_ANSWER, answer);
-                checkForError(answer);
-            }
+            sql = "select status, window_name from queue_users, queue_workers " +
+                    "where queue_users.record_id=? and queue_users.worker_user_id=queue_workers.worker_user_id " +
+                    "and queue_workers.queue_id =queue_users.queue_id";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(record_id, TYPES.INT)},
+                    new Returning[]{RtrngOf("status", TYPES.STRING),
+                            RtrngOf("window_name", TYPES.STRING)},
+                    ANSWER_MODE.NO_OR_ONE_ANSWER, answer);
+            checkForError(answer);
         } catch (SQLException e) {
             System.out.println("Database getInfoUserInQueue: " + e);
             answer.put("error", e);

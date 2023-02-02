@@ -47,7 +47,7 @@
         app:layout_constraintTop_toBottomOf="@id/textServices" />
 
     <Button
-        android:id="@+id/button_scan"
+        android:id="@+id/button_login"
         android:layout_width="265dp"
         android:layout_height="69dp"
         android:layout_marginTop="40dp"
@@ -82,7 +82,7 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_scan" />
+        app:layout_constraintTop_toBottomOf="@id/button_login" />
 
     <TextView
         android:id="@+id/textBack"

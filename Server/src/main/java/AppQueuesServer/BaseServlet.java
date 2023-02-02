@@ -19,6 +19,18 @@ public class BaseServlet extends HttpServlet {
         controller = new PostgreSQLController();
     }
 
+    protected boolean isRegistered(HttpServletRequest request) {
+        return request.getSession().getAttribute("user_id") != null;
+    }
+
+    protected boolean checkRegistered(HttpServletRequest request, PrintWriter out) {
+        if (!isRegistered(request)) {
+            out.println(new JSONObject().put("error", "You should be registered"));
+            System.out.println("error checkRegistered: You should be registered");
+            return true;
+        }
+        return false;
+    }
     protected boolean checkParameters(HttpServletRequest request, String[] params, PrintWriter out) {
         ArrayList<String> missing_params = new ArrayList<>();
         for (String param : params) {

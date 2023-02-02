@@ -13,14 +13,12 @@ import java.io.PrintWriter;
 public class EditQueueServlet extends BaseServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = basicDo(response);
+        checkRegistered(request, out);
         if (checkParameters(request, new String[]{"queue_name"}, out)) {
             return;
         }
         String queue_name = request.getParameter("queue_name");
         HttpSession session = request.getSession();
-        if (checkSession(session, new String[]{"user_id"}, out)) {
-            return;
-        }
         Integer user_id = (Integer) session.getAttribute("user_id");
         JSONObject answer = controller.infoQueue(queue_name, user_id);
         out.println(answer);
@@ -28,6 +26,7 @@ public class EditQueueServlet extends BaseServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = basicDo(response);
+        checkRegistered(request, out);
         JSONObject body = readRequest(request);
         if (checkBody(body, new String[]{"name", "workers", "new"}, out)) {
             return;
@@ -40,11 +39,8 @@ public class EditQueueServlet extends BaseServlet {
             workers[i] = (String) workers_jsonarray.get(i);
         }
         HttpSession session = request.getSession();
-        if (checkSession(session, new String[]{"user_id"}, out)) {
-            return;
-        }
         Integer user_id = (Integer) session.getAttribute("user_id");
-        JSONObject answer = new JSONObject();
+        JSONObject answer;
         if (is_new) {
             answer = controller.createQueue(name, user_id, workers);
         } else {

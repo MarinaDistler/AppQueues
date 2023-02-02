@@ -29,7 +29,7 @@
         app:layout_constraintVertical_bias="0.377" />
 
     <Button
-        android:id="@+id/button_scan"
+        android:id="@+id/button_login"
         android:layout_width="265dp"
         android:layout_height="69dp"
         android:layout_marginTop="40dp"

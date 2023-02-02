@@ -33,7 +33,7 @@
         app:layout_constraintVertical_bias="0.04" />
 
     <Button
-        android:id="@+id/button_find"
+        android:id="@+id/button_create"
         android:layout_width="265dp"
         android:layout_height="69dp"
         android:layout_marginTop="27dp"
@@ -55,7 +55,6 @@
         android:id="@+id/textSelect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
         android:text="Enter the name"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
@@ -67,7 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.532"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/button_scan" />
+        tools:layout_editor_absoluteY="125dp" />
 
     <EditText
         android:id="@+id/editTextWorkerLogin"
@@ -100,10 +99,10 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_find">
+        app:layout_constraintTop_toBottomOf="@+id/button_create">
 
         <LinearLayout
-            android:id="@+id/layoutInfo"
+            android:id="@+id/layout_queues"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"

@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import com.example.app.BaseActivity
 import com.example.app.R
 import org.json.JSONArray
-import org.json.JSONObject
 
 class FindWorkerActivity : BaseActivity() {
     val path = "find-worker"
@@ -34,7 +33,7 @@ class FindWorkerActivity : BaseActivity() {
                 showSnackBar("Nothing found")
             } else {
                 val logins = answer.get("logins") as JSONArray
-                val layout = findViewById<LinearLayout>(R.id.layoutInfo)
+                val layout = findViewById<LinearLayout>(R.id.layout_queues)
                 layout.visibility = View.VISIBLE
                 layout.removeAllViews()
                 for (i in 0..logins.length() - 1) {

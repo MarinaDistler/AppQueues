@@ -37,7 +37,7 @@ class SelectQueueActivity : BaseActivity() {
         } else {
             val queue_names = answer.get("queue_names") as JSONArray
             val queue_ids = answer.get("queue_ids") as JSONArray
-            val layout = findViewById<LinearLayout>(R.id.layoutInfo)
+            val layout = findViewById<LinearLayout>(R.id.layout_queues)
             layout.visibility = View.VISIBLE
             layout.removeAllViews()
             queues = JSONObject()

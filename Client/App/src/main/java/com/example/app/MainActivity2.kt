@@ -1,5 +1,6 @@
 package com.example.app
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -22,13 +23,18 @@ class MainActivity2 : BaseActivity() {
         val pass = findViewById<EditText>(R.id.editTextPassword).text.toString()
         if (name.isEmpty() or pass.isEmpty()) {
             Toast.makeText(this, "both name and pass are required", Toast.LENGTH_SHORT).show()
-        } else if (network.doHttpPost("hello-servlet", JSONObject()
-                    .put("login", name)
-                    .put("password", pass)).has("error")) { // добавить другие ошибки
-            Toast.makeText(this, "Login already exists", Toast.LENGTH_SHORT).show()
-        }
-        else {
-            finish()
+        } else {
+            val answer = network.doHttpPost("hello-servlet", JSONObject()
+                .put("login", name)
+                .put("password", pass))
+            println(answer)
+            if (answer.has("error")) { // добавить другие ошибки
+                Toast.makeText(this, "Login already exists", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                setResult(Activity.RESULT_OK, Intent())
+                finish()
+            }
         }
     }
 }

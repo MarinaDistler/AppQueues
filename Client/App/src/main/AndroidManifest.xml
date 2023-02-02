@@ -90,6 +90,13 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".admins.ViewAllQueuesActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".clients.FindShopsActivity"
             android:exported="false">
             <meta-data

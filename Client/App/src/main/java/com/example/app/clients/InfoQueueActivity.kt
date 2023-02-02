@@ -37,6 +37,12 @@ class InfoQueueActivity : BaseActivity() {
 
     fun updateInfo() {
         val answer = network.doHttpGet(path, listOf("check_status" to false.toString()))
+        if (answer.has("error") && answer.getString("error") ==
+                    "[record_id, queue_id] should be in session attributes" && isUserInQueue() == null) {
+            handlerThread!!.quitSafely();
+            val intent = Intent(this, FindShopsActivity::class.java)
+            startActivity(intent)
+        }
         if (network.checkForError(answer, arrayOf("number", "time", "num_workers"), this)) {
             Handler(handlerThread!!.looper).postDelayed( ::updateInfo, 3000)
             return
@@ -60,19 +66,17 @@ class InfoQueueActivity : BaseActivity() {
                 getString(R.string.text_number_workers) + " " +
                         answer.getInt("num_workers").toString()
         }
-        if (number == 0) {
-            if (network.checkForError(answer, arrayOf("window_name", "status"), this)) {
-                Handler(handlerThread!!.looper).postDelayed( ::updateInfo, 3000)
-                return
-            }
+        if (answer.has("window_name") && answer.has("status")) {
             val status = answer.getString("status")
-            if (status == "WORK") {
+            if (status == "WAIT") {
+                Handler(handlerThread!!.looper).postDelayed( ::updateInfo, 3000)
+            } else if (status == "WORK") {
                 val title = "Your turn!"
                 val text = "Your window is " + answer.getString("window_name")
-                showDialog(title, text)
+                showDialog(title, text, cancelable = false)
                 val ntfc_id = showNotification(title, text, intent=Intent(this, InfoQueueActivity::class.java))
                 Handler(handlerThread!!.looper).post { updateInfoEnd(ntfc_id) }
-            } else if (status == "COMPLITED") {
+            } else if (status == "COMPLETED") {
                 Handler(handlerThread!!.looper).post { updateInfoEnd(null) }
             } else {
                 showSnackBar("error: your status=$status")
@@ -88,7 +92,7 @@ class InfoQueueActivity : BaseActivity() {
             return
         }
         val status = answer.getString("status")
-        if (status == "COMPLITED") {
+        if (status == "COMPLETED") {
             handlerThread!!.quitSafely();
             val intent = Intent(this, RateQueueActivity::class.java)
             showNotification("Thank you for using our app", "Please rate the service", ntfc_id, intent)

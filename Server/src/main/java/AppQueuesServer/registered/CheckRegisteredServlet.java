@@ -13,12 +13,8 @@ import java.io.PrintWriter;
 public class CheckRegisteredServlet extends BaseServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = basicDo(response);
-        HttpSession session = request.getSession();
         JSONObject answer = new JSONObject();
-        answer.put("is_registered", false);
-        if (session.getAttribute("user_id") != null) {
-            answer.put("is_registered", true);
-        }
+        answer.put("is_registered", isRegistered(request));
         out.println(answer);
     }
 }

@@ -2,13 +2,17 @@ package com.example.app
 
 import android.app.*
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -20,25 +24,37 @@ import com.example.app.clients.InfoQueueActivity
 import com.example.network.Network
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import java.security.AccessController.getContext
 
 
-class BaseDialogFragment(val title: String, val text: String) : DialogFragment() {
+class BaseDialogFragment(val title: String, val text: String? = null, val cancelable: Boolean = false,
+                         val positive_text: String? = null, val positive_action: DialogInterface.OnClickListener? = null,
+                         val negative_text: String? = null, val negative_action: DialogInterface.OnClickListener? = null) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
+            val textViewTitle = TextView(activity)
+            textViewTitle.text = title
+            textViewTitle.textSize = 18.0F
+            textViewTitle.setTypeface(null, Typeface.BOLD)
+            textViewTitle.gravity = Gravity.CENTER
             val builder = AlertDialog.Builder(it)
-            builder.setTitle(title)
+            builder.setCustomTitle(textViewTitle)
                 .setMessage(text)
+                .setPositiveButton(positive_text, positive_action)
+                .setNegativeButton(negative_text, negative_action)
+            isCancelable = cancelable
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 }
+
 
 open class BaseActivity : AppCompatActivity() {
     val network = Network()
     var notification_id = 1
     var channel_id: String? = null
     var notificationManager: NotificationManager? = null
+
+    private val DELETE_WIDTH = 50
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,11 +87,15 @@ open class BaseActivity : AppCompatActivity() {
         println(text)
     }
 
-    fun showDialog(title: String, text: String) {
+    fun showDialog(title: String, text: String? = null, cancelable: Boolean = false, positive_text: String? = null,
+                   positive_action: DialogInterface.OnClickListener? = null, negative_text: String? = null,
+                   negative_action: DialogInterface.OnClickListener? = null) {
         if (isBackground()) {
             return
         }
-        val myDialogFragment = BaseDialogFragment(title, text)
+        val myDialogFragment = BaseDialogFragment(title, text, cancelable,
+            positive_text, positive_action,
+            negative_text, negative_action)
         val manager = supportFragmentManager
         myDialogFragment.show(manager, "myDialog")
     }
@@ -124,9 +144,10 @@ open class BaseActivity : AppCompatActivity() {
         button.backgroundTintList = ColorStateList.valueOf(getColor(R.color.teal_700))
         button.setTextColor(Color.WHITE)
         if (width != null) {
-            button.width = width
+            button.layoutParams = LayoutParams(width, LayoutParams.WRAP_CONTENT)
         }
         layout.addView(button)
+        println(button.layoutParams.width)
         return button
     }
 
@@ -136,34 +157,50 @@ open class BaseActivity : AppCompatActivity() {
         textView.isAllCaps = false
         textView.setTextColor(Color.WHITE)
         if (width != null) {
-            textView.width = width
+            textView.layoutParams = LayoutParams(width, LayoutParams.WRAP_CONTENT)
         }
         textView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
         layout.addView(textView)
         return textView
     }
 
-    fun createTextWithDelete(activity: Activity, text: String, function: (view: View) -> Unit, layout: LinearLayout) {
+    fun createTextWithDelete(activity: Activity, text: String, function_delete: (view: View) -> Unit, layout: LinearLayout) {
         val lin_layout = LinearLayout(activity)
         lin_layout.orientation = LinearLayout.HORIZONTAL
-        createTextView(activity, text, lin_layout, width=layout.width - dpToPx(50))
-        createButton(activity, "X", function, lin_layout, width=dpToPx(50))
+        createTextView(activity, text, lin_layout, width=layout.width - dpToPx(DELETE_WIDTH))
+        createButton(activity, "X", function_delete, lin_layout, width=dpToPx(DELETE_WIDTH))
         layout.addView(lin_layout)
     }
 
-    fun checkUserInQueue() {
+    fun createButtonWithDelete(activity: Activity, text: String, function: (view: View) -> Unit,
+                               function_delete: (view: View) -> Unit, layout: LinearLayout) {
+        val lin_layout = LinearLayout(activity)
+        lin_layout.orientation = LinearLayout.HORIZONTAL
+        createButton(activity, text, function, lin_layout, width=layout.width - dpToPx(DELETE_WIDTH))
+        createButton(activity, "X", function_delete, lin_layout, width=dpToPx(DELETE_WIDTH))
+        layout.addView(lin_layout)
+    }
+
+    fun isUserInQueue() : String? {
         val path = "check-user-in-queue"
         val answer = network.doHttpGet(path)
         if (network.checkForError(answer, arrayOf(), this)) {
-            return
+            return null
         }
         if (!answer.has("queue")) {
-            return
+            return null
         }
-        val intent = Intent(this, InfoQueueActivity::class.java)
-        intent.putExtra("queue", answer.getString("queue"))
-        intent.putExtra("is_in_queue", true)
-        startActivity(intent)
+        return answer.getString("queue")
+    }
+
+    fun checkUserInQueue() {
+        val queue = isUserInQueue()
+        if (queue != null) {
+            val intent = Intent(this, InfoQueueActivity::class.java)
+            intent.putExtra("queue", queue)
+            intent.putExtra("is_in_queue", true)
+            startActivity(intent)
+        }
     }
 
     fun isRegistered() : Boolean {
