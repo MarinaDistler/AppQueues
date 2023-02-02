@@ -18,7 +18,8 @@ public class CheckUserInQueueServlet extends BaseServlet {
         if (session.getAttribute("record_id") != null) {
             Integer record_id = (Integer) session.getAttribute("record_id");
             JSONObject info = controller.checkUserStatus(record_id);
-            if (info.getString("status") == "WORK") {
+            String status = info.getString("status");
+            if (status.equals("WORK") || status.equals("WAIT")) {
                 answer.put("queue", session.getAttribute("queue"));
             } else {
                 session.removeAttribute("record_id");

@@ -153,8 +153,8 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "select shop_name as shop_names from users, queues where shop_name like ? and " +
-                    "user_id=owner_user_id order by shop_name";
+            String sql = "select shop_name as shop_names from users where shop_name like ? " +
+                    "order by shop_name";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf("%" + name + "%", TYPES.STRING)},
                     new Returning[]{RtrngOf("shop_names", TYPES.STRING)},
@@ -172,7 +172,7 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "select queue_name as queues from queues where owner_user_id=?";
+            String sql = "select queue_name as queues from queues where owner_user_id=? and delete_time is null";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(user_id, TYPES.INT)},
                     new Returning[]{RtrngOf("queues", TYPES.STRING)},
@@ -521,23 +521,15 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "select record_id, queue_id from queue_users " +
-                    "where user_id=? and status='WAIT'";
+            String sql = "select record_id, queues.queue_id as queue_id, queue_name " +
+                    "from queue_users, queues where user_id=? and status='WAIT' " +
+                    "and queue_users.queue_id=queues.queue_id";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(user_id, TYPES.INT)},
                     new Returning[]{RtrngOf("record_id", TYPES.INT),
-                            RtrngOf("queue_id", TYPES.INT)},
+                            RtrngOf("queue_id", TYPES.INT),
+                            RtrngOf("queue_name", TYPES.STRING)},
                     ANSWER_MODE.NO_OR_ONE_ANSWER, answer);
-            if (checkForError(answer) || !answer.has("queue_id")) {
-                CloseDB();
-                return answer;
-            }
-            Integer queue_id = answer.getInt("queue_id");
-            sql = "select queue_name from queues queue_id=?";
-            doSql(conn.prepareStatement(sql),
-                    new Parameter[]{PrmtrOf(queue_id, TYPES.INT)},
-                    new Returning[]{RtrngOf("queue_name", TYPES.STRING)},
-                    ANSWER_MODE.ONE_ANSWER, answer);
             checkForError(answer);
         } catch (SQLException e) {
             System.out.println("Database checkUserInQueue: " + e);

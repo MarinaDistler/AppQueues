@@ -40,8 +40,8 @@ class InfoQueueActivity : BaseActivity() {
         if (answer.has("error") && answer.getString("error") ==
                     "[record_id, queue_id] should be in session attributes" && isUserInQueue() == null) {
             handlerThread!!.quitSafely();
-            val intent = Intent(this, FindShopsActivity::class.java)
-            startActivity(intent)
+            finish()
+            return
         }
         if (network.checkForError(answer, arrayOf("number", "time", "num_workers"), this)) {
             Handler(handlerThread!!.looper).postDelayed( ::updateInfo, 3000)
