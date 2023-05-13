@@ -47,8 +47,8 @@ class CreateQueueActivity : BaseActivity() {
         is_new = intent.getBooleanExtra("is_new", true)
         if (!is_new) {
             queue_name = intent.getStringExtra("queue_name")
-            val answer = network.doHttpGet(path, listOf("queue_name" to queue_name!!))
             findViewById<TextView>(R.id.textCreateQueue).text = "Edit the queue"
+            val answer = network.doHttpGet(path, listOf("queue_name" to queue_name!!))
             if (network.checkForError(answer, arrayOf("workers"), this)) {
                 return
             }

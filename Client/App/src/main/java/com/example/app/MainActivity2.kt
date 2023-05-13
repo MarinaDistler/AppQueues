@@ -27,12 +27,14 @@ class MainActivity2 : BaseActivity() {
             val answer = network.doHttpPost("hello-servlet", JSONObject()
                 .put("login", name)
                 .put("password", pass))
-            println(answer)
             if (answer.has("error")) { // добавить другие ошибки
                 Toast.makeText(this, "Login already exists", Toast.LENGTH_SHORT).show()
             }
             else {
-                setResult(Activity.RESULT_OK, Intent())
+                val resultIntent = Intent()
+                resultIntent.putExtra("name", "sign_in")
+                setResult(Activity.RESULT_OK, resultIntent)
+                is_registred = true
                 finish()
             }
         }

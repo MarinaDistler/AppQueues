@@ -113,13 +113,15 @@ class InfoQueueActivity : BaseActivity() {
     }
 
     fun exitQueue(view: View) {
-        network.doHttpPost(path, JSONObject(), listOf("exit" to true.toString()))
+        val answer = network.doHttpPost(path, JSONObject(), listOf("exit" to true.toString()))
+        network.checkForError(answer, arrayOf(), this)
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
 
     fun skipPlace(view: View) {
         val answer = network.doHttpPost(path, JSONObject(), listOf("skip" to true.toString()))
+        network.checkForError(answer, arrayOf(), this)
         if (answer.has("notification")) {
             showSnackBar(answer.getString("notification"))
         }

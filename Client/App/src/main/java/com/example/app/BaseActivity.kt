@@ -10,13 +10,15 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.DialogFragment
@@ -24,6 +26,7 @@ import com.example.app.clients.InfoQueueActivity
 import com.example.network.Network
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import org.json.JSONObject
 
 
 class BaseDialogFragment(val title: String, val text: String? = null, val cancelable: Boolean = false,
@@ -53,6 +56,16 @@ open class BaseActivity : AppCompatActivity() {
     var notification_id = 1
     var channel_id: String? = null
     var notificationManager: NotificationManager? = null
+    var is_registred: Boolean? = null
+    var resultLauncherMenu = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+    { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            if (intent!!.getStringExtra("name") == "sign_in") {
+                restartActivity()
+            }
+        }
+    }
 
     private val DELETE_WIDTH = 50
 
@@ -68,6 +81,50 @@ open class BaseActivity : AppCompatActivity() {
         channel.lightColor = getColor(R.color.teal_700)
         channel.enableVibration(true)
         notificationManager!!.createNotificationChannel(channel)
+        val actionBar = supportActionBar
+        actionBar!!.setIcon(R.drawable.ic_action_bar)
+        actionBar.setDisplayUseLogoEnabled(true)
+        is_registred = isRegistered()
+    }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        if (is_registred!!) {
+            menuInflater.inflate(R.menu.main_registred, menu)
+        } else {
+            menuInflater.inflate(R.menu.main, menu)
+        }
+        return super.onCreateOptionsMenu(menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (is_registred!!) {
+            when (item.itemId) {
+                R.id.item_home -> startActivity(Intent(this, MainRegistredActivity::class.java))
+                R.id.item_profile -> startActivity(Intent(this, MainRegistredActivity::class.java))
+                R.id.item_sign_out -> {
+                    val path = "is-registered"
+                    val answer = network.doHttpPost(path, JSONObject(), listOf("sign_out" to true.toString()))
+                    network.checkForError(answer, arrayOf(), this)
+                    is_registred = false
+                    restartActivity()
+                }
+            }
+        } else {
+            when (item.itemId) {
+                R.id.item_home -> startActivity(Intent(this, MainActivity::class.java))
+                R.id.item_register -> {
+                    resultLauncherMenu.launch(Intent(this, MainActivity2::class.java))
+                }
+                R.id.item_sign_in -> {
+                    resultLauncherMenu.launch(Intent(this, MainActivity2::class.java))
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun restartActivity() {
+        val cur_intent = intent
+        finish()
+        startActivity(cur_intent)
     }
 
     fun isBackground() : Boolean {
@@ -204,7 +261,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun isRegistered() : Boolean {
-        val path = "check-registered"
+        val path = "is-registered"
         val answer = network.doHttpGet(path)
         if (network.checkForError(answer, arrayOf("is_registered"), this)) {
             return false
@@ -213,7 +270,8 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun checkRegistered() {
-        if (!isRegistered()) {
+        is_registred = isRegistered()
+        if (!is_registred!!) {
             val intent = Intent(this, MainActivity2::class.java)
             startActivity(intent)
         }

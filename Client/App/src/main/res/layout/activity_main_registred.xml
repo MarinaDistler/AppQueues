@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#9C27B0"
-    tools:context=".MainActivity"
->
+    tools:context=".MainRegistredActivity">
 
     <TextView
         android:id="@+id/textViewTitle"
@@ -21,12 +20,11 @@
         android:textColorLink="#FFFFFF"
         android:textSize="60sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.022"
-    />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.022" />
 
     <TextView
         android:id="@+id/textViewDescription"
@@ -41,12 +39,11 @@
         android:textColorLink="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.085"
-    />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.085" />
 
     <TextView
         android:id="@+id/textViewBottom"
@@ -62,7 +59,8 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageViewLogo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_to_my_queues" />
 
     <ImageView
         android:id="@+id/imageViewLogo"
@@ -76,6 +74,21 @@
         app:srcCompat="@drawable/logo" />
 
     <Button
+        android:id="@+id/button_to_my_queues"
+        android:layout_width="265dp"
+        android:layout_height="69dp"
+        android:layout_marginTop="65dp"
+        android:backgroundTint="#00897B"
+        android:onClick="goToViewAllQueues"
+        android:text="My queues"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewBottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/button_queue" />
+
+    <Button
         android:id="@+id/button_queue"
         android:layout_width="265dp"
         android:layout_height="69dp"
@@ -85,6 +98,7 @@
         android:text="Join the queue"
         android:textAllCaps="false"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_to_my_queues"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

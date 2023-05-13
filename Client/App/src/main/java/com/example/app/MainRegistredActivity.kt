@@ -4,18 +4,20 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
+import android.widget.Button
+import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.example.app.admins.ViewAllQueuesActivity
 import com.example.app.clients.FindShopsActivity
 
-class MainActivity : BaseActivity() {
+class MainRegistredActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        if (isRegistered()) {
-            val intent = Intent(this, MainRegistredActivity::class.java)
+        setContentView(R.layout.activity_main_registred)
+        if (!isRegistered()) {
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }
