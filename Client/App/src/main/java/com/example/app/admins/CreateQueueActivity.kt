@@ -48,15 +48,21 @@ class CreateQueueActivity : BaseActivity() {
         if (!is_new) {
             queue_name = intent.getStringExtra("queue_name")
             val answer = network.doHttpGet(path, listOf("queue_name" to queue_name!!))
+            findViewById<TextView>(R.id.textCreateQueue).text = "Edit the queue"
             if (network.checkForError(answer, arrayOf("workers"), this)) {
                 return
             }
             findViewById<EditText>(R.id.editTextQueueName).setText(queue_name!!)
-            workers = answer.getJSONArray("workers") as MutableList<String>
-            val layout = findViewById<LinearLayout>(R.id.layout_workers)
-            for (worker in workers) {
-                createTextWithDelete(this, worker, ::deleteWorker, layout)
+            val workers_json = answer.getJSONArray("workers")
+            workers = mutableListOf<String>()
+            for (i in 0 until workers_json.length()) {
+                workers.add(workers_json.getString(i))
             }
+            val layout = findViewById<LinearLayout>(R.id.layout_workers)
+            layout.postDelayed({
+                for (worker in workers) {
+                    createTextWithDelete(this, worker, ::deleteWorker, layout)
+                } }, 1)
         }
     }
 
@@ -80,9 +86,10 @@ class CreateQueueActivity : BaseActivity() {
             return
         }
         val answer = network.doHttpPost(path, JSONObject()
-            .put("name", name).put("workers", JSONArray(workers)).put("new", true))
+            .put("name", name).put("workers", JSONArray(workers))
+            .put("new", is_new).put("old_name", queue_name))
         if (!network.checkForError(answer, arrayOf(), this)) {
-            showSnackBar("Creation succeeded!")
+            showSnackBar("Saving succeeded!")
             val intent = Intent(this, ViewAllQueuesActivity::class.java)
             startActivity(intent)
         }

@@ -33,23 +33,39 @@ public class InfoQueueServlet extends BaseServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = basicDo(response);
         JSONObject body = readRequest(request);
-        if (checkBody(body, new String[]{"queue_id", "queue"}, out)) {
-            return;
+        if (request.getParameter("add_user") != null) {
+            if (checkBody(body, new String[]{"queue_id", "queue"}, out)) {
+                return;
+            }
+            Integer queue_id = body.getInt("queue_id");
+            String queue = body.getString("queue");
+            HttpSession session = request.getSession();
+            if (session.getAttribute("record_id") != null) {
+                out.println(new JSONObject());
+                return;
+            }
+            JSONObject answer = controller.addUserToQueue(queue_id, (Integer) session.getAttribute("user_id"),
+                    (String) session.getAttribute("user_name"));
+            session.setAttribute("record_id", answer.getInt("record_id"));
+            session.setAttribute("queue_id", queue_id);
+            session.setAttribute("queue", queue);
+            answer.remove("record_id");
+            answer.remove("queue");
+            out.println(answer);
+        } else {
+            HttpSession session = request.getSession();
+            if (checkSession(session, new String[]{"record_id", "queue_id"}, out)) {
+                return;
+            }
+            Integer record_id = (Integer) session.getAttribute("record_id");
+            Integer queue_id = (Integer) session.getAttribute("queue_id");
+            JSONObject answer = new JSONObject();
+            if (request.getParameter("exit") != null) {
+                answer = controller.exitUserFromQueue(record_id);
+            } else if (request.getParameter("skip") != null) {
+                answer = controller.skipPlaceUserInQueue(record_id, queue_id);
+            }
+            out.println(answer);
         }
-        Integer queue_id = body.getInt("queue_id");
-        String queue = body.getString("queue");
-        HttpSession session = request.getSession();
-        if (session.getAttribute("record_id") != null) {
-            out.println(new JSONObject());
-            return;
-        }
-        JSONObject answer = controller.addUserToQueue(queue_id, (Integer) session.getAttribute("user_id"),
-                (String) session.getAttribute("user_name"));
-        session.setAttribute("record_id", answer.getInt("record_id"));
-        session.setAttribute("queue_id", queue_id);
-        session.setAttribute("queue", queue);
-        answer.remove("record_id");
-        answer.remove("queue");
-        out.println(answer);
     }
 }

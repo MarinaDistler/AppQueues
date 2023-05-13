@@ -14,11 +14,8 @@ import com.example.app.clients.FindShopsActivity
 class MainActivity : BaseActivity() {
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
     { result ->
-        println("!!!")
         if (result.resultCode == Activity.RESULT_OK) {
-            println("!!@")
             if (isRegistered()) {
-                println("!!")
                 val button = findViewById<Button>(R.id.button_login)
                 button.text = "Your queues"
                 button.setOnClickListener(::goToViewAllQueues)

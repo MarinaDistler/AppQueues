@@ -6,8 +6,10 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import com.example.app.BaseActivity
+import com.example.app.MainActivity
 import com.example.app.R
 import org.json.JSONObject
 
@@ -26,7 +28,8 @@ class InfoQueueActivity : BaseActivity() {
             val queue_id = intent.getIntExtra("queue_id", -1)
             val answer = network.doHttpPost(
                 path, JSONObject()
-                    .put("queue_id", queue_id).put("queue", queue)
+                    .put("queue_id", queue_id).put("queue", queue),
+                listOf("add_user" to true.toString())
             )
             network.checkForError(answer, arrayOf(), this)
         }
@@ -40,14 +43,14 @@ class InfoQueueActivity : BaseActivity() {
         if (answer.has("error") && answer.getString("error") ==
                     "[record_id, queue_id] should be in session attributes" && isUserInQueue() == null) {
             handlerThread!!.quitSafely();
-            finish()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
             return
         }
         if (network.checkForError(answer, arrayOf("number", "time", "num_workers"), this)) {
             Handler(handlerThread!!.looper).postDelayed( ::updateInfo, 3000)
             return
         }
-        println(answer)
         val number = answer.getInt("number")
         Handler(Looper.getMainLooper()).post {
             findViewById<TextView>(R.id.textNumber).text = getString(R.string.text_number_queue) +
@@ -78,6 +81,10 @@ class InfoQueueActivity : BaseActivity() {
                 Handler(handlerThread!!.looper).post { updateInfoEnd(ntfc_id) }
             } else if (status == "COMPLETED") {
                 Handler(handlerThread!!.looper).post { updateInfoEnd(null) }
+            } else if (status == "CANCELED") {
+                handlerThread!!.quitSafely()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
             } else {
                 showSnackBar("error: your status=$status")
                 Handler(handlerThread!!.looper).postDelayed( ::updateInfo, 3000)
@@ -98,8 +105,23 @@ class InfoQueueActivity : BaseActivity() {
             showNotification("Thank you for using our app", "Please rate the service", ntfc_id, intent)
             intent.putExtra("queue", queue)
             startActivity(intent)
-        } else {
+        } else if (status == "WORK"){
             Handler(handlerThread!!.looper).postDelayed( { updateInfoEnd(ntfc_id) }, 3000)
+        } else if (status == "WAIT") {
+            Handler(handlerThread!!.looper).postDelayed(::updateInfo, 3000)
+        }
+    }
+
+    fun exitQueue(view: View) {
+        network.doHttpPost(path, JSONObject(), listOf("exit" to true.toString()))
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun skipPlace(view: View) {
+        val answer = network.doHttpPost(path, JSONObject(), listOf("skip" to true.toString()))
+        if (answer.has("notification")) {
+            showSnackBar(answer.getString("notification"))
         }
     }
 }
