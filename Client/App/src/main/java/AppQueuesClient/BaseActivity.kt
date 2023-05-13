@@ -1,4 +1,4 @@
-package com.example.app
+package AppQueuesClient
 
 import android.app.*
 import android.content.Context
@@ -22,8 +22,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.DialogFragment
-import com.example.app.clients.InfoQueueActivity
-import com.example.network.Network
+import AppQueuesClient.clients.InfoQueueActivity
+import com.example.app.R
+import network.Network
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import org.json.JSONObject

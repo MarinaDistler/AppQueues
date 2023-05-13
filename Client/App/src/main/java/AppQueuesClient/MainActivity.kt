@@ -1,23 +1,19 @@
-package com.example.app
+package AppQueuesClient
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import com.example.app.admins.ViewAllQueuesActivity
-import com.example.app.clients.FindShopsActivity
+import AppQueuesClient.admins.ViewAllQueuesActivity
+import AppQueuesClient.clients.FindShopsActivity
+import com.example.app.R
 
-class MainRegistredActivity : BaseActivity() {
+class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_registred)
-        if (!isRegistered()) {
-            val intent = Intent(this, MainActivity::class.java)
+        setContentView(R.layout.activity_main)
+        if (isRegistered()) {
+            val intent = Intent(this, MainRegistredActivity::class.java)
             startActivity(intent)
         }
     }

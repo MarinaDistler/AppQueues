@@ -1,9 +1,8 @@
-package com.example.app
+package AppQueuesClient
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.example.app.R
 
 class MainActivity4Client : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

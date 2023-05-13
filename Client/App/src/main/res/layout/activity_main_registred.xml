@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#9C27B0"
-    tools:context=".MainRegistredActivity">
+    tools:context="AppQueuesClient.MainRegistredActivity">
 
     <TextView
         android:id="@+id/textViewTitle"

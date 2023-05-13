@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#9C27B0"
     android:backgroundTint="#9C27B0"
-    tools:context=".MainActivity6Admin">
+    tools:context="AppQueuesClient.MainActivity6Admin">
 
     <TextView
         android:id="@+id/textView"

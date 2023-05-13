@@ -8,14 +8,14 @@
     android:layout_height="match_parent"
     android:background="#9C27B0"
     android:isScrollContainer="false"
-    tools:context=".admins.EditQueueActivity">
+    tools:context="AppQueuesClient.admins.EditQueueActivity">
 
     <TextView
         android:id="@+id/textCreateQueue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="The queue"
+        android:text="Create the queue"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textColorHighlight="#FFFFFF"
@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textCreateQueue">
 
         <LinearLayout
-            android:id="@+id/layout_queues"
+            android:id="@+id/layout_queue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -65,15 +65,12 @@
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/textNameQueueValue"
-                    android:layout_width="81dp"
+                <AutoCompleteTextView
+                    android:id="@+id/editTextQueueName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:text="queue name"
-                    android:textAlignment="viewEnd"
+                    android:hint="Enter the queue name"
+                    android:textAlignment="textEnd"
                     android:textColor="#FFFFFF"
                     android:textColorHighlight="#FFFFFF"
                     android:textColorHint="#FFFFFF"
@@ -103,6 +100,26 @@
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
+                <Button
+                    android:id="@+id/button_add_worker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/teal_700"
+                    android:enabled="true"
+                    android:onClick="addWorker"
+                    android:text="Add"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textColorHighlight="#FFFFFF"
+                    android:textColorHint="#FFFFFF"
+                    android:textColorLink="#FFFFFF"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextWorkerLogin" />
+
             </LinearLayout>
 
             <ScrollView
@@ -124,8 +141,8 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/teal_700"
                 android:enabled="true"
-                android:onClick="editQueue"
-                android:text="Edit"
+                android:onClick="saveQueue"
+                android:text="Save"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textColorHighlight="#FFFFFF"

@@ -1,4 +1,4 @@
-package com.example.app.clients
+package AppQueuesClient.clients
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,10 +6,9 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
-import com.example.app.BaseActivity
-import com.example.app.MainActivity
+import AppQueuesClient.BaseActivity
+import AppQueuesClient.MainActivity
 import com.example.app.R
 import org.json.JSONObject
 

@@ -20,119 +20,119 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".MainActivity6Admin"
+            android:name="AppQueuesClient.MainActivity6Admin"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity5Admin"
+            android:name="AppQueuesClient.MainActivity5Admin"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity4Admin"
+            android:name="AppQueuesClient.MainActivity4Admin"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity4Consultant"
+            android:name="AppQueuesClient.MainActivity4Consultant"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity4Client"
+            android:name="AppQueuesClient.MainActivity4Client"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity3"
+            android:name="AppQueuesClient.MainActivity3"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity2"
+            android:name="AppQueuesClient.MainActivity2"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".admins.CreateQueueActivity"
+            android:name="AppQueuesClient.admins.EditQueueActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".admins.EditQueueActivity"
+            android:name="AppQueuesClient.admins.ViewQueueActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".admins.FindWorkerActivity"
+            android:name="AppQueuesClient.admins.FindWorkerActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".admins.ViewAllQueuesActivity"
+            android:name="AppQueuesClient.admins.ViewAllQueuesActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".clients.FindShopsActivity"
+            android:name="AppQueuesClient.clients.FindShopsActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".clients.SelectQueueActivity"
+            android:name="AppQueuesClient.clients.SelectQueueActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".clients.InfoQueueActivity"
+            android:name="AppQueuesClient.clients.InfoQueueActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".clients.RateQueueActivity"
+            android:name="AppQueuesClient.clients.RateQueueActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainRegistredActivity"
+            android:name="AppQueuesClient.MainRegistredActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="AppQueuesClient.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,8 +1,8 @@
-package com.example.network
+package network
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.app.BaseActivity
+import AppQueuesClient.BaseActivity
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Headers
 import com.github.kittinunf.fuel.core.extensions.jsonBody

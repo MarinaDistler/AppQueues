@@ -1,13 +1,12 @@
-package com.example.app.admins
+package AppQueuesClient.admins
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.view.*
-import com.example.app.BaseActivity
+import AppQueuesClient.BaseActivity
 import com.example.app.R
 import org.json.JSONObject
 
@@ -36,7 +35,7 @@ class ViewAllQueuesActivity : BaseActivity() {
     fun toEditQueue(view: View) {
         checkRegistered()
         val queue_name = (view as Button).text
-        val intent = Intent(this, EditQueueActivity::class.java)
+        val intent = Intent(this, ViewQueueActivity::class.java)
         intent.putExtra("queue_name", queue_name)
         startActivity(intent)
     }
@@ -61,7 +60,7 @@ class ViewAllQueuesActivity : BaseActivity() {
 
     fun toCreateQueue(view: View) {
         checkRegistered()
-        val intent = Intent(this, CreateQueueActivity::class.java)
+        val intent = Intent(this, EditQueueActivity::class.java)
         intent.putExtra("is_new", true)
         startActivity(intent)
     }

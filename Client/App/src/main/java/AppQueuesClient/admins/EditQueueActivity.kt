@@ -1,23 +1,20 @@
-package com.example.app.admins
+package AppQueuesClient.admins
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.children
 import androidx.core.view.get
-import com.example.app.BaseActivity
+import AppQueuesClient.BaseActivity
 import com.example.app.R
-import com.example.app.clients.SelectQueueActivity
 import org.json.JSONArray
 import org.json.JSONObject
 
-class CreateQueueActivity : BaseActivity() {
+class EditQueueActivity : BaseActivity() {
     val path = "edit-queue"
     var is_new: Boolean = true
     var queue_name: String? = null
@@ -42,7 +39,7 @@ class CreateQueueActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         network.initSharedPreferences(this)
-        setContentView(R.layout.activity_create_queue)
+        setContentView(R.layout.activity_edit_queue)
         checkRegistered()
         is_new = intent.getBooleanExtra("is_new", true)
         if (!is_new) {

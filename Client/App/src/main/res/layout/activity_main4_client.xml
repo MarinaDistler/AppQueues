@@ -7,6 +7,6 @@
     android:layout_height="match_parent"
     android:background="#9C27B0"
     android:backgroundTint="#9C27B0"
-    tools:context=".MainActivity4Client">
+    tools:context="AppQueuesClient.MainActivity4Client">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

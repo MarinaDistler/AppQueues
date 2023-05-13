@@ -1,4 +1,4 @@
-package com.example.app.admins
+package AppQueuesClient.admins
 
 import android.app.Activity
 import android.content.Intent
@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import com.example.app.BaseActivity
+import AppQueuesClient.BaseActivity
 import com.example.app.R
 import org.json.JSONArray
 

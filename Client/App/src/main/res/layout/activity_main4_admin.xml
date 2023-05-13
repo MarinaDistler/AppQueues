@@ -8,7 +8,7 @@
     android:background="#9C27B0"
     android:backgroundTint="#9C27B0"
     android:foregroundTint="#00897B"
-    tools:context=".MainActivity4Admin">
+    tools:context="AppQueuesClient.MainActivity4Admin">
 
     <TextView
         android:id="@+id/textViewServices"
