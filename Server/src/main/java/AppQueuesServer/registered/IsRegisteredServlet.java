@@ -23,7 +23,10 @@ public class IsRegisteredServlet extends BaseServlet {
         PrintWriter out = basicDo(response);
         if (request.getParameter("sign_out") != null) {
             HttpSession session = request.getSession();
-            session.removeAttribute("user_id");
+            Enumeration<String> names = session.getAttributeNames();
+            while (names.hasMoreElements()) {
+                session.removeAttribute(names.nextElement());
+            }
             JSONObject answer = new JSONObject();
             out.println(answer);
         }

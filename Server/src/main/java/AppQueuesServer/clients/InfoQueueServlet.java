@@ -48,7 +48,7 @@ public class InfoQueueServlet extends BaseServlet {
                     (String) session.getAttribute("user_name"));
             session.setAttribute("record_id", answer.getInt("record_id"));
             session.setAttribute("queue_id", queue_id);
-            session.setAttribute("queue", queue);
+            session.setAttribute("queue_name", queue);
             answer.remove("record_id");
             answer.remove("queue");
             out.println(answer);

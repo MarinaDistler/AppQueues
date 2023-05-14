@@ -162,7 +162,7 @@ open class BaseActivity : AppCompatActivity() {
                          intent: Intent = Intent(this, MainActivity::class.java)
     ) : Int? {
         if (!isBackground()) {
-            return null
+            return ntfc_id
         }
         intent.apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -184,6 +184,11 @@ open class BaseActivity : AppCompatActivity() {
         }
         notificationManager!!.notify(id, builder.build())
         return id
+    }
+    fun closeNotification(ntfc_id: Int) {
+        if (ntfc_id != -1) {
+            notificationManager!!.cancel(ntfc_id);
+        }
     }
 
     fun dpToPx(dp: Int): Int {

@@ -25,6 +25,7 @@ class RateQueueActivity : BaseActivity() {
         val rating = findViewById<RatingBar>(R.id.ratingBar).rating
         val answer = network.doHttpPost(path, JSONObject().put("rating", rating))
         network.checkForError(answer, arrayOf(), this)
+        closeNotification(intent.getIntExtra("ntfc_id", -1))
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }

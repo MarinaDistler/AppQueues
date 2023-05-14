@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Objects;
 
 @WebServlet(name = "CheckUserInQueueServlet", value = "/check-user-in-queue")
 public class CheckUserInQueueServlet extends BaseServlet {
@@ -19,8 +20,8 @@ public class CheckUserInQueueServlet extends BaseServlet {
             Integer record_id = (Integer) session.getAttribute("record_id");
             JSONObject info = controller.checkUserStatus(record_id);
             String status = info.getString("status");
-            if (status.equals("WORK") || status.equals("WAIT")) {
-                answer.put("queue", session.getAttribute("queue"));
+            if (Objects.equals(status, "WORK") || Objects.equals(status, "WAIT")) {
+                answer.put("queue", session.getAttribute("queue_name"));
             } else {
                 session.removeAttribute("record_id");
                 session.removeAttribute("queue");
@@ -31,6 +32,7 @@ public class CheckUserInQueueServlet extends BaseServlet {
             if (info.has("record_id") && info.has("queue_id") && info.has("queue_name")) {
                 session.setAttribute("record_id", info.getInt("record_id"));
                 session.setAttribute("queue_id", info.getInt("queue_id"));
+                session.setAttribute("queue_name", info.getString("queue_name"));
                 answer.put("queue", info.getString("queue_name"));
             }
         }

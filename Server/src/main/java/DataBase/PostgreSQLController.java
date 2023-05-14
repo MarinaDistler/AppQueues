@@ -2,6 +2,7 @@ package DataBase;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.postgresql.util.PGInterval;
 import org.postgresql.util.PSQLException;
 
 import java.sql.*;
@@ -22,7 +23,9 @@ public class PostgreSQLController {
         INT,
         ARRAY,
         NULL,
-        FLOAT
+        FLOAT,
+        TIMESTAMP,
+        INTERVAL
     }
 
     private Parameter PrmtrOf(Object param, TYPES type) {
@@ -79,6 +82,8 @@ public class PostgreSQLController {
             statement.setFloat(i, (Float) param);
         } else if (type == TYPES.NULL) {
             statement.setNull(i, Types.NULL);
+        } else if (type == TYPES.TIMESTAMP) {
+            statement.setTimestamp(i, (Timestamp) param);
         }
     }
 
@@ -87,6 +92,19 @@ public class PostgreSQLController {
             answer.put(name, resultSet.getString(name));
         } else if (type == TYPES.INT) {
             answer.put(name, resultSet.getInt(name));
+        } else if (type == TYPES.ARRAY) {
+            answer.put(name, resultSet.getArray(name));
+        } else if (type == TYPES.FLOAT) {
+            answer.put(name, resultSet.getFloat(name));
+        } else if (type == TYPES.TIMESTAMP) {
+            answer.put(name, resultSet.getTimestamp(name));
+        } else if (type == TYPES.INTERVAL) {
+            PGInterval dur = (PGInterval) resultSet.getObject(name);
+            if (dur == null || dur.getDays() > 0) {
+                answer.put(name, -1);
+            } else {
+                answer.put(name, dur.getHours() * 3600 + dur.getMinutes() * 60 + dur.getSeconds());
+            }
         }
     }
 
@@ -516,24 +534,17 @@ public class PostgreSQLController {
                 CloseDB();
                 return answer;
             }
-            answer.put("time", -1);
-            /* рпедсказание времени
-            sql = "select count(*) as num_req, avg(end_work_time-start_work_time) as mean_time " +
-                    "from queue_users where queue_id=? and status='COMPLETED'";
-            info = doSql(conn.prepareStatement(sql),
+            sql = "select percentile_cont(0.5) within group (order by end_work_time-start_work_time) as median_time " +
+                    "from queue_users where queue_id=? and status='COMPLETED' and " +
+                    "current_timestamp-start_work_time<=interval '1 day'";
+            doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(queue_id, TYPES.INT)},
-                    new Returnings[]{new Returnings("num_req", TYPES.INT), new Returnings("mean_time", TYPES.INT)},
-                    ANSWER_MODE.ONE_ANSWER, new JSONObject());
-            if (checkForError(answer)) {
+                    new Returning[]{RtrngOf("median_time", TYPES.INTERVAL)},
+                    ANSWER_MODE.ONE_ANSWER, info);
+            if (checkForError(info)) {
                 CloseDB();
                 return answer;
             }
-            if (info.getInt("mean_time") < 5) {
-                answer.put("time", -1);
-            } else {
-                answer.put("time", info.getInt("mean_time"));
-            }
-            */
             sql = "select count(*) as num_workers from queue_workers, history_work " +
                     "where queue_id=? and queue_workers.worker_user_id=history_work.worker_user_id and " +
                     "end_time is null and delete_time is null";
@@ -544,6 +555,17 @@ public class PostgreSQLController {
             if (checkForError(answer)) {
                 CloseDB();
                 return answer;
+            }
+            Integer median_time = info.getInt("median_time");
+            if (median_time == -1) {
+                answer.put("time", -1);
+            } else {
+                Integer num_workers = answer.getInt("num_workers");
+                if (num_workers != 0) {
+                    answer.put("time", (median_time * (answer.getInt("number") - 1) + 90 * answer.getInt("number")) / num_workers);
+                } else {
+                    answer.put("time", -1);
+                }
             }
             sql = "select status, window_name from queue_users, queue_workers " +
                     "where queue_users.record_id=? and queue_users.worker_user_id=queue_workers.worker_user_id " +
@@ -602,7 +624,7 @@ public class PostgreSQLController {
         JSONObject answer = new JSONObject();
         try {
             String sql = "select record_id, queues.queue_id as queue_id, queue_name " +
-                    "from queue_users, queues where user_id=? and status='WAIT' " +
+                    "from queue_users, queues where user_id=? and (status='WAIT' or status='WORK')" +
                     "and queue_users.queue_id=queues.queue_id";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(user_id, TYPES.INT)},
