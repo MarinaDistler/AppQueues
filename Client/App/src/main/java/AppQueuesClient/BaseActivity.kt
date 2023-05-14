@@ -83,8 +83,9 @@ open class BaseActivity : AppCompatActivity() {
         channel.enableVibration(true)
         notificationManager!!.createNotificationChannel(channel)
         val actionBar = supportActionBar
-        actionBar!!.setIcon(R.drawable.ic_action_bar)
-        actionBar.setDisplayUseLogoEnabled(true)
+        actionBar?.setIcon(R.drawable.ic_action_bar)
+        actionBar?.setDisplayUseLogoEnabled(true)
+        actionBar?.setDisplayShowHomeEnabled(true)
         is_registred = isRegistered()
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
