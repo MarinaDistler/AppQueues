@@ -1,6 +1,8 @@
 package AppQueuesClient
 
 import AppQueuesClient.clients.InfoQueueActivity
+import AppQueuesClient.registered.LoginActivity
+import AppQueuesClient.registered.MainRegisteredActivity
 import AppQueuesClient.registered.ProfileActivity
 import android.app.*
 import android.content.Context
@@ -24,14 +26,11 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.fragment.app.DialogFragment
 import com.example.app.R
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import network.Network
 import org.json.JSONObject
-import java.lang.reflect.Type
-
 
 
 open class BaseActivity : AppCompatActivity() {
@@ -81,7 +80,7 @@ open class BaseActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (is_registred!!) {
             when (item.itemId) {
-                R.id.item_home -> startActivity(Intent(this, MainRegistredActivity::class.java))
+                R.id.item_home -> startActivity(Intent(this, MainRegisteredActivity::class.java))
                 R.id.item_profile -> startActivity(Intent(this, ProfileActivity::class.java))
                 R.id.item_sign_out -> {
                     val path = "is-registered"
@@ -95,10 +94,10 @@ open class BaseActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.item_home -> startActivity(Intent(this, MainActivity::class.java))
                 R.id.item_register -> {
-                    resultLauncherMenu.launch(Intent(this, MainActivity2::class.java))
+                    resultLauncherMenu.launch(Intent(this, LoginActivity::class.java))
                 }
                 R.id.item_sign_in -> {
-                    resultLauncherMenu.launch(Intent(this, MainActivity2::class.java))
+                    resultLauncherMenu.launch(Intent(this, LoginActivity::class.java))
                 }
             }
         }
@@ -322,7 +321,7 @@ open class BaseActivity : AppCompatActivity() {
     fun checkRegistered() {
         is_registred = isRegistered()
         if (!is_registred!!) {
-            resultLauncherMenu.launch(Intent(this, MainActivity2::class.java))
+            resultLauncherMenu.launch(Intent(this, LoginActivity::class.java))
         }
     }
 }

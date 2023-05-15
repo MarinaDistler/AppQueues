@@ -62,7 +62,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name="AppQueuesClient.MainActivity2"
+            android:name="AppQueuesClient.registered.LoginActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -132,7 +132,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name="AppQueuesClient.MainRegistredActivity"
+            android:name="AppQueuesClient.registered.MainRegisteredActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.View
 import AppQueuesClient.admins.ViewAllQueuesActivity
 import AppQueuesClient.clients.FindShopsActivity
+import AppQueuesClient.registered.MainRegisteredActivity
 import com.example.app.R
 
 class MainActivity : BaseActivity() {
@@ -13,7 +14,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (isRegistered()) {
-            val intent = Intent(this, MainRegistredActivity::class.java)
+            val intent = Intent(this, MainRegisteredActivity::class.java)
             startActivity(intent)
         }
     }

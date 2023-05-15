@@ -1,5 +1,6 @@
-package AppQueuesClient
+package AppQueuesClient.workers
 
+import AppQueuesClient.BaseActivity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +10,7 @@ import android.widget.Toast
 import com.example.app.R
 import org.json.JSONObject
 
-class MainActivity2 : BaseActivity() {
+class WaitActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         network.initSharedPreferences(this)

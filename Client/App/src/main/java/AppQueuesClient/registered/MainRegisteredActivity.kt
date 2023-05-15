@@ -1,5 +1,7 @@
-package AppQueuesClient
+package AppQueuesClient.registered
 
+import AppQueuesClient.BaseActivity
+import AppQueuesClient.MainActivity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -8,7 +10,7 @@ import AppQueuesClient.admins.ViewAllQueuesActivity
 import AppQueuesClient.clients.FindShopsActivity
 import com.example.app.R
 
-class MainRegistredActivity : BaseActivity() {
+class MainRegisteredActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_registred)
