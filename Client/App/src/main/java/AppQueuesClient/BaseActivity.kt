@@ -1,5 +1,7 @@
 package AppQueuesClient
 
+import AppQueuesClient.clients.InfoQueueActivity
+import AppQueuesClient.registered.ProfileActivity
 import android.app.*
 import android.content.Context
 import android.content.DialogInterface
@@ -15,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.Button
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -22,34 +25,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.DialogFragment
-import AppQueuesClient.clients.InfoQueueActivity
 import com.example.app.R
-import network.Network
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import network.Network
 import org.json.JSONObject
+import java.lang.reflect.Type
 
-
-class BaseDialogFragment(val title: String, val text: String? = null, val cancelable: Boolean = false,
-                         val positive_text: String? = null, val positive_action: DialogInterface.OnClickListener? = null,
-                         val negative_text: String? = null, val negative_action: DialogInterface.OnClickListener? = null) : DialogFragment() {
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let {
-            val textViewTitle = TextView(activity)
-            textViewTitle.text = title
-            textViewTitle.textSize = 18.0F
-            textViewTitle.setTypeface(null, Typeface.BOLD)
-            textViewTitle.gravity = Gravity.CENTER
-            val builder = AlertDialog.Builder(it)
-            builder.setCustomTitle(textViewTitle)
-                .setMessage(text)
-                .setPositiveButton(positive_text, positive_action)
-                .setNegativeButton(negative_text, negative_action)
-            isCancelable = cancelable
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
-    }
-}
 
 
 open class BaseActivity : AppCompatActivity() {
@@ -100,7 +82,7 @@ open class BaseActivity : AppCompatActivity() {
         if (is_registred!!) {
             when (item.itemId) {
                 R.id.item_home -> startActivity(Intent(this, MainRegistredActivity::class.java))
-                R.id.item_profile -> startActivity(Intent(this, MainRegistredActivity::class.java))
+                R.id.item_profile -> startActivity(Intent(this, ProfileActivity::class.java))
                 R.id.item_sign_out -> {
                     val path = "is-registered"
                     val answer = network.doHttpPost(path, JSONObject(), listOf("sign_out" to true.toString()))
@@ -147,16 +129,77 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun showDialog(title: String, text: String? = null, cancelable: Boolean = false, positive_text: String? = null,
-                   positive_action: DialogInterface.OnClickListener? = null, negative_text: String? = null,
-                   negative_action: DialogInterface.OnClickListener? = null) {
+                   positive_action: (dialog: DialogInterface, id: Int) -> Unit = {_, _ -> }, negative_text: String? = null,
+                   negative_action: (dialog: DialogInterface, id: Int) -> Unit = {_, _ -> }, internal_view: View? = null) {
         if (isBackground()) {
             return
         }
-        val myDialogFragment = BaseDialogFragment(title, text, cancelable,
-            positive_text, positive_action,
-            negative_text, negative_action)
-        val manager = supportFragmentManager
-        myDialogFragment.show(manager, "myDialog")
+        val textViewTitle = TextView(this)
+        textViewTitle.text = title
+        textViewTitle.textSize = 30.0F
+        textViewTitle.setTypeface(null, Typeface.BOLD)
+        textViewTitle.gravity = Gravity.CENTER
+        val mBuilder = AlertDialog.Builder(this)
+            .setCustomTitle(textViewTitle)
+            .setMessage(text)
+            .setPositiveButton(positive_text, null)
+            .setNegativeButton(negative_text, null)
+            .setView(internal_view)
+            .setCancelable(cancelable)
+        val dialog = mBuilder.create()
+        dialog.show()
+        val mPositiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        mPositiveButton.setOnClickListener {
+            positive_action(dialog, 0)
+        }
+        val mNegativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        mNegativeButton.setOnClickListener {
+            negative_action(dialog, 0)
+        }
+    }
+
+    fun showDialogEditText(title: String, text: String? = null, cancelable: Boolean = false,
+                           positive_text: String? = null, positive_action: (dialog: DialogInterface, view: View) -> Unit = {_, _ -> },
+                           negative_text: String? = null, negative_action: (dialog: DialogInterface, view: View) -> Unit = {_, _ -> },
+                           name_text_view: String, hint_edit_text: String? = null
+    ) {
+        if (isBackground()) {
+            return
+        }
+        val linearlayout: View = layoutInflater.inflate(R.layout.dialog_edit_text_1, null)
+        linearlayout.findViewById<TextView>(R.id.dialogTextView).text = name_text_view
+        val edit_text = linearlayout.findViewById<EditText>(R.id.dialogEditText)
+        edit_text.hint = hint_edit_text
+        showDialog(title, text, cancelable, positive_text, {dialog, _ ->
+            positive_action(dialog, linearlayout)
+        },
+            negative_text, {dialog, _ ->
+                negative_action(dialog, linearlayout)
+            }, linearlayout)
+    }
+
+    fun showDialogTwoEditText(title: String, text: String? = null, cancelable: Boolean = false,
+                           positive_text: String? = null, positive_action: (dialog: DialogInterface, view: View) -> Unit = {_, _ -> },
+                           negative_text: String? = null, negative_action: (dialog: DialogInterface, view: View) -> Unit = {_, _ -> },
+                           name_text_view1: String, hint_edit_text1: String? = null,
+                              name_text_view2: String, hint_edit_text2: String? = null
+    ) {
+        if (isBackground()) {
+            return
+        }
+        val linearlayout: View = layoutInflater.inflate(R.layout.dialog_edit_text_2, null)
+        linearlayout.findViewById<TextView>(R.id.dialogTextView1).text = name_text_view1
+        linearlayout.findViewById<TextView>(R.id.dialogTextView2).text = name_text_view2
+        val edit_text1 = linearlayout.findViewById<EditText>(R.id.dialogEditText1)
+        val edit_text2 = linearlayout.findViewById<EditText>(R.id.dialogEditText2)
+        edit_text1.hint = hint_edit_text1
+        edit_text2.hint = hint_edit_text2
+        showDialog(title, text, cancelable, positive_text, {dialog, _ ->
+                positive_action(dialog, linearlayout)
+            },
+            negative_text, {dialog, _ ->
+                negative_action(dialog, linearlayout)
+            }, linearlayout)
     }
 
     fun showNotification(title: String, text: String, ntfc_id: Int? = null,
@@ -279,8 +322,7 @@ open class BaseActivity : AppCompatActivity() {
     fun checkRegistered() {
         is_registred = isRegistered()
         if (!is_registred!!) {
-            val intent = Intent(this, MainActivity2::class.java)
-            startActivity(intent)
+            resultLauncherMenu.launch(Intent(this, MainActivity2::class.java))
         }
     }
 }

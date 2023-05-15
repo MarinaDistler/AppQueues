@@ -584,6 +584,80 @@ public class PostgreSQLController {
         return answer;
     }
 
+    public JSONObject getProfile(Integer user_id) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "select shop_name, login from users where user_id=?";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{RtrngOf("shop_name", TYPES.STRING), RtrngOf("login", TYPES.STRING)},
+                    ANSWER_MODE.ONE_ANSWER, answer);
+            if (!answer.has("shop_name")) {
+                answer.put("shop_name", "");
+            }
+            checkForError(answer);
+        } catch (SQLException e) {
+            System.out.println("Database checkUserStatus: " + e);
+            answer.put("error", e);
+        }
+        CloseDB();
+        return answer;
+    }
+
+    public JSONObject updateUserLogin(Integer user_id, String login) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "update users set login=? where user_id=?";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(login, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{},
+                    ANSWER_MODE.NO_ANSWER, answer);
+            checkForError(answer);
+        } catch (SQLException e) {
+            System.out.println("Database checkUserStatus: " + e);
+            answer.put("error", e);
+        }
+        CloseDB();
+        return answer;
+    }
+
+    public JSONObject updateUserShopName(Integer user_id, String shop_name) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "update users set shop_name=? where user_id=?";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(shop_name, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{},
+                    ANSWER_MODE.NO_ANSWER, answer);
+            checkForError(answer);
+        } catch (SQLException e) {
+            System.out.println("Database checkUserStatus: " + e);
+            answer.put("error", e);
+        }
+        CloseDB();
+        return answer;
+    }
+
+    public JSONObject updateUserPassword(Integer user_id, String password) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "update users set password=? where user_id=?";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(password, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{},
+                    ANSWER_MODE.NO_ANSWER, answer);
+            checkForError(answer);
+        } catch (SQLException e) {
+            System.out.println("Database checkUserStatus: " + e);
+            answer.put("error", e);
+        }
+        CloseDB();
+        return answer;
+    }
     public JSONObject checkUserStatus(Integer record_id) {
         Conn();
         JSONObject answer = new JSONObject();

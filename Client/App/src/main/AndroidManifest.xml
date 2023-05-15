@@ -125,6 +125,13 @@
                 android:value="" />
         </activity>
         <activity
+            android:name="AppQueuesClient.registered.ProfileActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name="AppQueuesClient.MainRegistredActivity"
             android:exported="false">
             <meta-data

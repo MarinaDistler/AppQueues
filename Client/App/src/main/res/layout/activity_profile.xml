@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="#9C27B0"
     android:isScrollContainer="false"
-    tools:context="AppQueuesClient.admins.ViewQueueActivity">
+    tools:context="reguistred.ProfileActivity">
 
     <TextView
         android:id="@+id/textTheProfile"
@@ -51,12 +51,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textNameQueue"
-                    android:layout_width="81dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:text="Name:"
+                    android:text="Login:"
                     android:textAlignment="viewStart"
                     android:textColor="#FFFFFF"
                     android:textColorHighlight="#FFFFFF"
@@ -66,13 +65,13 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/textNameQueueValue"
-                    android:layout_width="81dp"
+                    android:id="@+id/textLoginValue"
+                    android:layout_width="190dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp"
                     android:layout_weight="1"
-                    android:text="queue name"
                     android:textAlignment="viewEnd"
                     android:textColor="#FFFFFF"
                     android:textColorHighlight="#FFFFFF"
@@ -80,6 +79,26 @@
                     android:textColorLink="#FFFFFF"
                     android:textSize="24sp"
                     android:textStyle="italic" />
+
+                <Button
+                    android:id="@+id/button_edit_login"
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/teal_700"
+                    android:enabled="true"
+                    android:maxWidth="26dp"
+                    android:onClick="editLogin"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textColorHighlight="#FFFFFF"
+                    android:textColorHint="#FFFFFF"
+                    android:textColorLink="#FFFFFF"
+                    android:textSize="20sp"
+                    app:icon="@drawable/ic_edit"
+                    app:iconPadding="5dp" />
 
             </LinearLayout>
 
@@ -89,12 +108,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textWorkers"
-                    android:layout_width="239dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:text="Workers:"
+                    android:text="Shop name:"
                     android:textAlignment="viewStart"
                     android:textColor="#FFFFFF"
                     android:textColorHighlight="#FFFFFF"
@@ -103,29 +121,54 @@
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/textShopNameValue"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:textAlignment="viewEnd"
+                    android:textColor="#FFFFFF"
+                    android:textColorHighlight="#FFFFFF"
+                    android:textColorHint="#FFFFFF"
+                    android:textColorLink="#FFFFFF"
+                    android:textSize="24sp"
+                    android:textStyle="italic" />
+
+                <Button
+                    android:id="@+id/button_edit_phone"
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/teal_700"
+                    android:enabled="true"
+                    android:maxWidth="26dp"
+                    android:onClick="editShopName"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textColorHighlight="#FFFFFF"
+                    android:textColorHint="#FFFFFF"
+                    android:textColorLink="#FFFFFF"
+                    android:textSize="20sp"
+                    app:icon="@drawable/ic_edit"
+                    app:iconPadding="5dp" />
+
             </LinearLayout>
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:id="@+id/layout_workers"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
-            </ScrollView>
-
             <Button
-                android:id="@+id/button_add_worker3"
+                android:id="@+id/button_change_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/teal_700"
                 android:enabled="true"
-                android:onClick="editQueue"
-                android:text="Edit"
+                android:onClick="changePassword"
+                android:text="Change password"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textColorHighlight="#FFFFFF"

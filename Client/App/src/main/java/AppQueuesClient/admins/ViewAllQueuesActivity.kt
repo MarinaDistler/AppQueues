@@ -7,19 +7,48 @@ import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.view.*
 import AppQueuesClient.BaseActivity
+import android.widget.EditText
+import android.widget.TextView
 import com.example.app.R
 import org.json.JSONObject
 
 class ViewAllQueuesActivity : BaseActivity() {
     val path = "view-queues"
     val path_delete = "delete-queue"
+    val path_profile = "profile"
+    var shop_name: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         network.initSharedPreferences(this)
         setContentView(R.layout.activity_view_all_queues)
         checkRegistered()
-        val answer = network.doHttpGet(path, listOf())
+        var answer = network.doHttpGet(path_profile)
+        if (network.checkForError(answer, arrayOf("shop_name", "login"), this)) {
+            return
+        }
+        shop_name = answer.getString("shop_name")
+        if (shop_name == "") {
+            showSnackBar("You do not have shop name!")
+            showDialogEditText("Create shop name", null,false,
+                "Save", {dialog, mview ->
+                    val str = mview.findViewById<EditText>(R.id.dialogEditText).text.toString()
+                    val text_error = mview.findViewById<TextView>(R.id.dialogTextError)
+                    if (str == "") {
+                        text_error.visibility = View.VISIBLE
+                        text_error.text = "The shop name must not be empty!"
+                    } else {
+                        val answer = network.doHttpPost(path_profile, JSONObject().put("shop_name", str))
+                        network.checkForError(answer, arrayOf(), this)
+                        restartActivity()
+                        dialog.cancel()
+                    } },
+                null, {dialog, _ -> dialog.cancel()},
+                "Shop name: ", shop_name
+            )
+        }
+        findViewById<TextView>(R.id.textShopNameViewAllQueues).text = shop_name
+        answer = network.doHttpGet(path, listOf())
         if (network.checkForError(answer, arrayOf("queues"), this)) {
             return
         }
@@ -30,6 +59,19 @@ class ViewAllQueuesActivity : BaseActivity() {
                 createButtonWithDelete(this, queues.getString(i), ::toEditQueue,
                     ::deleteQueue, layout)
             } }, 1)
+    }
+
+    fun editShopName(view: View?) {
+        showDialogEditText("Edit shop name", null,true,
+            "Save", {dialog, mview ->
+                val str = mview.findViewById<EditText>(R.id.dialogEditText).text.toString()
+                val answer = network.doHttpPost(path_profile, JSONObject().put("shop_name", str))
+                network.checkForError(answer, arrayOf(), this)
+                restartActivity()
+                dialog.cancel() },
+            "Cancel", {dialog, _ -> dialog.cancel()},
+            "Shop name: ", shop_name
+        )
     }
 
     fun toEditQueue(view: View) {
