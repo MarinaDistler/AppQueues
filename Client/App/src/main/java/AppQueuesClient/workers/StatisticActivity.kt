@@ -1,4 +1,4 @@
-package AppQueuesClient.admins
+package AppQueuesClient.workers
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import AppQueuesClient.BaseActivity
+import AppQueuesClient.admins.EditQueueActivity
 import com.example.app.R
 
 class StatisticActivity : BaseActivity() {

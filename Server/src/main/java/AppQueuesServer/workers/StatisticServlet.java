@@ -1,4 +1,4 @@
-package AppQueuesServer.admins;
+package AppQueuesServer.workers;
 
 import AppQueuesServer.BaseServlet;
 import jakarta.servlet.annotation.WebServlet;
