@@ -11,33 +11,22 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "ProfileServlet", value = "/profile")
+@WebServlet(name = "RegisterServlet", value = "/register")
 public class RegisterServlet extends BaseServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PrintWriter out = basicDo(response);
-        HttpSession session = request.getSession();
-        if (checkSession(session, new String[]{"user_id"}, out)) {
-            return;
-        }
-        JSONObject answer = controller.getProfile((Integer) session.getAttribute("user_id"));
-        out.println(answer);
-    }
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = basicDo(response);
-        HttpSession session = request.getSession();
         JSONObject body = readRequest(request);
-        if (checkSession(session, new String[]{"user_id"}, out)) {
+        if (checkBody(body, new String[]{"login", "password"}, out)) {
             return;
         }
-        Integer user_id = (Integer) session.getAttribute("user_id");
-        JSONObject answer = new JSONObject();
-        if (body.has("login")) {
-            answer = controller.updateUserLogin(user_id, body.getString("login"));
-        } else if (body.has("shop_name")) {
-            answer = controller.updateUserShopName(user_id, body.getString("shop_name"));
-        } else if (body.has("password")) {
-            answer = controller.updateUserPassword(user_id, body.getString("password"));
+        String shop_name = null;
+        if (body.has("shop_name")) {
+            shop_name = body.getString("shop_name");
+        }
+        JSONObject answer = controller.createUser(body.getString("login"), body.getString("password"), shop_name);
+        if (answer.has("user_id")) {
+            request.getSession().setAttribute("user_id", answer.getInt("user_id"));
+            answer.remove("user_id");
         }
         out.println(answer);
     }

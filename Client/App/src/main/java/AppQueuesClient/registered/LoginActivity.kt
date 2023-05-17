@@ -6,38 +6,64 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.app.R
 import org.json.JSONObject
 
 class LoginActivity : BaseActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        network.initSharedPreferences(this)
-        setContentView(R.layout.activity_main2)
-        if (isRegistered()) {
-            val intent = Intent(this, MainActivity3::class.java)
-            startActivity(intent)
+    val path = "login"
+    var resultLauncherToRegister = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+    { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            val name = intent!!.getStringExtra("name")
+            if (name == "register") {
+                doFinish()
+            }
         }
     }
-    fun onClick(view: View) {
-        val name = findViewById<EditText>(R.id.editTextWorkerLogin).text.toString()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
+        if (isRegistered()) {
+            doFinish()
+        }
+    }
+
+    fun doFinish() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("name", "sign_in")
+        setResult(Activity.RESULT_OK, resultIntent)
+        is_registred = true
+        finish()
+    }
+
+    fun goRegister(view: View) {
+        val intent = Intent(this, RegisterActivity::class.java)
+        resultLauncherToRegister.launch(intent)
+    }
+
+    fun doLogin(view: View) {
+        val login = findViewById<EditText>(R.id.editTextLogin).text.toString()
         val pass = findViewById<EditText>(R.id.editTextPassword).text.toString()
-        if (name.isEmpty() or pass.isEmpty()) {
-            Toast.makeText(this, "both name and pass are required", Toast.LENGTH_SHORT).show()
+        if (login.isEmpty() and pass.isEmpty()) {
+            showSnackBar("Both login and password must not be empty!")
+        } else if (login.isEmpty()) {
+            showSnackBar("Login and password must not be empty!")
+        } else if (pass.isEmpty()) {
+            showSnackBar("Password must not be empty!")
         } else {
-            val answer = network.doHttpPost("hello-servlet", JSONObject()
-                .put("login", name)
+            val answer = network.doHttpPost(path, JSONObject()
+                .put("login", login)
                 .put("password", pass))
-            if (answer.has("error")) { // добавить другие ошибки
-                Toast.makeText(this, "Login already exists", Toast.LENGTH_SHORT).show()
+            if (network.checkForError(answer, arrayOf(), this)) {
+                return
             }
-            else {
-                val resultIntent = Intent()
-                resultIntent.putExtra("name", "sign_in")
-                setResult(Activity.RESULT_OK, resultIntent)
-                is_registred = true
-                finish()
+            if (answer.has("notification")) {
+                showSnackBar(answer.getString("notification"))
+            } else {
+                doFinish()
             }
         }
     }

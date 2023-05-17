@@ -44,11 +44,11 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@id/editTextWorkerLogin"
-        app:layout_constraintTop_toTopOf="@id/editTextWorkerLogin" />
+        app:layout_constraintStart_toEndOf="@id/editTextLogin"
+        app:layout_constraintTop_toTopOf="@id/editTextLogin" />
 
     <EditText
-        android:id="@+id/editTextWorkerLogin"
+        android:id="@+id/editTextLogin"
         android:layout_width="242dp"
         android:layout_height="54dp"
         android:layout_marginTop="24dp"

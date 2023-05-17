@@ -43,7 +43,8 @@ open class BaseActivity : AppCompatActivity() {
     { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val intent = result.data
-            if (intent!!.getStringExtra("name") == "sign_in") {
+            val name = intent!!.getStringExtra("name")
+            if (name == "sign_in" || name == "register") {
                 restartActivity()
             }
         }

@@ -23,7 +23,7 @@ class FindShopsActivity : BaseActivity() {
         //??
     }
     fun findShop(view: View) {
-        val name = findViewById<EditText>(R.id.editTextWorkerLogin).text.toString()
+        val name = findViewById<EditText>(R.id.editTextLogin).text.toString()
         if (name.isEmpty()) {
             showSnackBar("Name can not be empty")
         } else {

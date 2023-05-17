@@ -14,14 +14,11 @@ class WaitActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         network.initSharedPreferences(this)
-        setContentView(R.layout.activity_main2)
-        if (isRegistered()) {
-            val intent = Intent(this, MainActivity3::class.java)
-            startActivity(intent)
-        }
+        setContentView(R.layout.activity_login)
+        checkRegistered()
     }
     fun onClick(view: View) {
-        val name = findViewById<EditText>(R.id.editTextWorkerLogin).text.toString()
+        val name = findViewById<EditText>(R.id.editTextLogin).text.toString()
         val pass = findViewById<EditText>(R.id.editTextPassword).text.toString()
         if (name.isEmpty() or pass.isEmpty()) {
             Toast.makeText(this, "both name and pass are required", Toast.LENGTH_SHORT).show()

@@ -21,7 +21,7 @@ class FindWorkerActivity : BaseActivity() {
     }
 
     fun findWorker(view: View) {
-        val login = findViewById<EditText>(R.id.editTextWorkerLogin).text.toString()
+        val login = findViewById<EditText>(R.id.editTextLogin).text.toString()
         if (login.isEmpty()) {
             showSnackBar("Login can not be empty")
         } else {

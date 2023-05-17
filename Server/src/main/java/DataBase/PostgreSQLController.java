@@ -715,68 +715,71 @@ public class PostgreSQLController {
         return answer;
     }
 
-    public static int addUser(String login, String password) {
-        int user_id = 0;
+    public JSONObject createUser(String login, String password, String shop_name) {
+        Conn();
+        JSONObject answer = new JSONObject();
         try {
-            Conn();
-            String sql = "INSERT INTO users(login, password) VALUES (?, ?) RETURNING user_id";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, login);
-            statement.setString(2, password);
-            ResultSet rs = statement.executeQuery();
-            rs.next();
-            user_id =  rs.getInt("user_id");
-            rs.close();
-            statement.close();
-        } catch (PSQLException e) {
-            System.out.println(e.getServerErrorMessage()); //добавить определение ошибки повторяющегося логина
-        }
-        finally {
-            CloseDB();
-            return user_id;
-        }
-    }
-
-    public static int checkUser(String login, String password) {
-        int user_id = 0;
-        try {
-            Conn();
-            String sql = "SELECT user_id from users where login=? and password=?";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, login);
-            statement.setString(2, password);
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                user_id = rs.getInt("user_id");
+            String sql = "select count(*) as number from users where login=?";
+            JSONObject info = doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(login, TYPES.STRING)},
+                    new Returning[]{RtrngOf("number", TYPES.INT)},
+                    ANSWER_MODE.ONE_ANSWER, new JSONObject());
+            if (checkForError(info)) {
+                CloseDB();
+                return answer;
             }
-            rs.close();
-            statement.close();
+            if (info.getInt("number") != 0) {
+                answer.put("notification", "Login already exists!");
+                CloseDB();
+                return answer;
+            }
+            if (shop_name != null) {
+                sql = "select count(*) as number from users where shop_name=?";
+                info = doSql(conn.prepareStatement(sql),
+                        new Parameter[]{PrmtrOf(shop_name, TYPES.STRING)},
+                        new Returning[]{RtrngOf("number", TYPES.INT)},
+                        ANSWER_MODE.ONE_ANSWER, new JSONObject());
+                if (checkForError(info)) {
+                    CloseDB();
+                    return answer;
+                }
+                if (info.getInt("number") != 0) {
+                    answer.put("notification", "Shop name already exists!");
+                    CloseDB();
+                    return answer;
+                }
+            }
+            sql = "insert into users(login, password, shop_name) values (?, ?, ?) returning user_id";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(login, TYPES.STRING), PrmtrOf(password, TYPES.STRING),
+                            PrmtrOf(shop_name, TYPES.STRING)},
+                    new Returning[]{RtrngOf("user_id", TYPES.INT)},
+                    ANSWER_MODE.NO_OR_ONE_ANSWER, answer);
+            checkForError(answer);
         } catch (Exception e) {
+            System.out.println("Database createUser: " + e);
             System.out.println(e);
         }
-        finally {
-            CloseDB();
-            return user_id;
-        }
+        CloseDB();
+        return answer;
     }
 
-    public static ArrayList<String> getAllNames() throws ClassNotFoundException, SQLException
-    {
-        ArrayList<String> names = new ArrayList<String>();
-
+    public JSONObject loginUser(String login, String password) {
         Conn();
-        Statement stat = conn.createStatement();
-        ResultSet rs = stat.executeQuery("select login from users");
-
-        while (rs.next()) {
-            names.add(rs.getString("login"));
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "select user_id from users where login=? and password=?";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(login, TYPES.STRING), PrmtrOf(password, TYPES.STRING)},
+                    new Returning[]{RtrngOf("user_id", TYPES.INT)},
+                    ANSWER_MODE.NO_OR_ONE_ANSWER, answer);
+            checkForError(answer);
+        } catch (Exception e) {
+            System.out.println("Database loginUser: " + e);
+            System.out.println(e);
         }
-
-        rs.close();
-        stat.close();
         CloseDB();
-
-        return names;
+        return answer;
     }
 
 }
