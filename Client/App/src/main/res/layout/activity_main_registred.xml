@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9C27B0"
-    tools:context="AppQueuesClient.registered.MainRegisteredActivity">
+    android:background="#673AB7"
+    tools:context="AppQueuesClient.MainRegistredActivity">
 
     <TextView
         android:id="@+id/textViewTitle"
@@ -76,9 +76,10 @@
     <Button
         android:id="@+id/button_to_my_queues"
         android:layout_width="265dp"
-        android:layout_height="69dp"
+        android:layout_height="50dp"
         android:layout_marginTop="65dp"
-        android:backgroundTint="#00897B"
+        android:background="@drawable/btn_rounded_corner"
+        android:backgroundTint="#E91E63"
         android:onClick="goToViewAllQueues"
         android:text="My queues"
         android:textAllCaps="false"
@@ -91,9 +92,10 @@
     <Button
         android:id="@+id/button_queue"
         android:layout_width="265dp"
-        android:layout_height="69dp"
+        android:layout_height="50dp"
         android:layout_marginTop="590dp"
-        android:backgroundTint="#00897B"
+        android:background="@drawable/btn_rounded_corner"
+        android:backgroundTint="#E91E63"
         android:onClick="goToFindQueueActivity"
         android:text="Join the queue"
         android:textAllCaps="false"

@@ -41,9 +41,9 @@ class InfoQueueActivity : BaseActivity() {
         val answer = network.doHttpGet(path, listOf("check_status" to false.toString()))
         if (answer.has("error") && answer.getString("error") ==
                     "[record_id, queue_id] should be in session attributes" && isUserInQueue() == null) {
-            handlerThread!!.quitSafely();
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            handlerThread!!.quitSafely();
             return
         }
         if (network.checkForError(answer, arrayOf("number", "time", "num_workers"), this)) {
@@ -102,7 +102,7 @@ class InfoQueueActivity : BaseActivity() {
             } else if (status == "WORK") {
                 val title = "Your turn!"
                 val text = "Your window is " + answer.getString("window_name")
-                showDialog(title, text, cancelable = false)
+                Handler(Looper.getMainLooper()).post { showDialog(title, text, cancelable = false) }
                 val intent = Intent(this, InfoQueueActivity::class.java)
                 intent.putExtra("queue", queue)
                 intent.putExtra("is_in_queue", true)
@@ -111,9 +111,9 @@ class InfoQueueActivity : BaseActivity() {
             } else if (status == "COMPLETED") {
                 Handler(handlerThread!!.looper).post { updateInfoEnd(ntfc_id_) }
             } else if (status == "CANCELED") {
-                handlerThread!!.quitSafely()
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
+                handlerThread!!.quitSafely()
             } else {
                 showSnackBar("error: your status=$status")
                 Handler(handlerThread!!.looper).postDelayed( {updateInfo(number, ntfc_id_)}, 3000)
@@ -129,13 +129,13 @@ class InfoQueueActivity : BaseActivity() {
         }
         val status = answer.getString("status")
         if (status == "COMPLETED") {
-            handlerThread!!.quitSafely();
             val intent = Intent(this, RateQueueActivity::class.java)
             intent.putExtra("queue", queue)
             intent.putExtra("ntfc_id", ntfc_id)
             val ntfc_id_ = showNotification("Thank you for using our app", "Please rate the service of queue", ntfc_id, intent)
             intent.putExtra("ntfc_id", ntfc_id_)
             startActivity(intent)
+            handlerThread!!.quitSafely();
         } else if (status == "WORK"){
             Handler(handlerThread!!.looper).postDelayed( { updateInfoEnd(ntfc_id) }, 3000)
         } else if (status == "WAIT") {

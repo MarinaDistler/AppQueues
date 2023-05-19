@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">EQueue</string>
-    <string name="text_predicted_time">Predicted waiting time:</string>
-    <string name="text_number_queue">Your number in queue:</string>
-    <string name="text_number_workers">Number of receiving specialists:</string>
-</resources>

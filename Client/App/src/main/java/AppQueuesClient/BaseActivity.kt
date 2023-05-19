@@ -130,9 +130,10 @@ open class BaseActivity : AppCompatActivity() {
 
     fun showDialog(title: String, text: String? = null, cancelable: Boolean = false, positive_text: String? = null,
                    positive_action: (dialog: DialogInterface, id: Int) -> Unit = {_, _ -> }, negative_text: String? = null,
-                   negative_action: (dialog: DialogInterface, id: Int) -> Unit = {_, _ -> }, internal_view: View? = null) {
+                   negative_action: (dialog: DialogInterface, id: Int) -> Unit = {_, _ -> }, internal_view: View? = null) :
+    AlertDialog? {
         if (isBackground()) {
-            return
+            return null
         }
         val textViewTitle = TextView(this)
         textViewTitle.text = title
@@ -156,21 +157,22 @@ open class BaseActivity : AppCompatActivity() {
         mNegativeButton.setOnClickListener {
             negative_action(dialog, 0)
         }
+        return dialog
     }
 
     fun showDialogEditText(title: String, text: String? = null, cancelable: Boolean = false,
                            positive_text: String? = null, positive_action: (dialog: DialogInterface, view: View) -> Unit = {_, _ -> },
                            negative_text: String? = null, negative_action: (dialog: DialogInterface, view: View) -> Unit = {_, _ -> },
                            name_text_view: String, hint_edit_text: String? = null
-    ) {
+    ) : AlertDialog? {
         if (isBackground()) {
-            return
+            return null
         }
         val linearlayout: View = layoutInflater.inflate(R.layout.dialog_edit_text_1, null)
         linearlayout.findViewById<TextView>(R.id.dialogTextView).text = name_text_view
         val edit_text = linearlayout.findViewById<EditText>(R.id.dialogEditText)
         edit_text.hint = hint_edit_text
-        showDialog(title, text, cancelable, positive_text, {dialog, _ ->
+        return showDialog(title, text, cancelable, positive_text, {dialog, _ ->
             positive_action(dialog, linearlayout)
         },
             negative_text, {dialog, _ ->
@@ -183,9 +185,9 @@ open class BaseActivity : AppCompatActivity() {
                            negative_text: String? = null, negative_action: (dialog: DialogInterface, view: View) -> Unit = {_, _ -> },
                            name_text_view1: String, hint_edit_text1: String? = null,
                               name_text_view2: String, hint_edit_text2: String? = null
-    ) {
+    ) : AlertDialog? {
         if (isBackground()) {
-            return
+            return null
         }
         val linearlayout: View = layoutInflater.inflate(R.layout.dialog_edit_text_2, null)
         linearlayout.findViewById<TextView>(R.id.dialogTextView1).text = name_text_view1
@@ -194,7 +196,7 @@ open class BaseActivity : AppCompatActivity() {
         val edit_text2 = linearlayout.findViewById<EditText>(R.id.dialogEditText2)
         edit_text1.hint = hint_edit_text1
         edit_text2.hint = hint_edit_text2
-        showDialog(title, text, cancelable, positive_text, {dialog, _ ->
+        return showDialog(title, text, cancelable, positive_text, {dialog, _ ->
                 positive_action(dialog, linearlayout)
             },
             negative_text, {dialog, _ ->
@@ -248,8 +250,9 @@ open class BaseActivity : AppCompatActivity() {
             function(view_button)
         }
         button.isAllCaps = false
-        button.backgroundTintList = ColorStateList.valueOf(getColor(R.color.teal_700))
+        button.backgroundTintList = ColorStateList.valueOf(getColor(R.color.pink))
         button.setTextColor(Color.WHITE)
+        button.background = getDrawable(R.drawable.btn_rounded_corner)
         if (width != null) {
             button.layoutParams = LayoutParams(width, LayoutParams.WRAP_CONTENT)
         }

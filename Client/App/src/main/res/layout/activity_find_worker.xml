@@ -6,7 +6,7 @@
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9C27B0"
+    android:background="#673AB7"
     android:isScrollContainer="false"
     tools:context="AppQueuesClient.admins.FindWorkerActivity">
 
@@ -28,11 +28,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:background="@drawable/btn_rounded_corner"
         android:id="@+id/button_create"
         android:layout_width="92dp"
         android:layout_height="54dp"
         android:layout_marginEnd="20dp"
-        android:backgroundTint="@color/teal_700"
+        android:backgroundTint="#E91E63"
         android:enabled="true"
         android:onClick="findWorker"
         android:text="Find "
@@ -44,24 +45,24 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@id/editTextLogin"
-        app:layout_constraintTop_toTopOf="@id/editTextLogin" />
+        app:layout_constraintStart_toEndOf="@id/editTextWorkerLogin"
+        app:layout_constraintTop_toTopOf="@id/editTextWorkerLogin" />
 
     <EditText
-        android:id="@+id/editTextLogin"
+        android:id="@+id/editTextWorkerLogin"
         android:layout_width="242dp"
         android:layout_height="54dp"
         android:layout_marginTop="24dp"
         android:width="10dp"
-        android:backgroundTint="#00897B"
+        android:backgroundTint="#E91E63"
         android:ems="10"
         android:enabled="true"
         android:inputType="textPersonName"
         android:scrollHorizontally="true"
         android:textColor="#FFFFFF"
-        android:textColorHighlight="#00897B"
+        android:textColorHighlight="#E91E63"
         android:textColorHint="#FFFFFF"
-        android:textColorLink="#00897B"
+        android:textColorLink="#E91E63"
         android:textSize="24sp"
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"

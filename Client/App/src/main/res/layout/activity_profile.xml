@@ -6,9 +6,9 @@
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9C27B0"
+    android:background="#673AB7"
     android:isScrollContainer="false"
-    tools:context="reguistred.ProfileActivity">
+    tools:context="??????????">
 
     <TextView
         android:id="@+id/textTheProfile"
@@ -81,13 +81,14 @@
                     android:textStyle="italic" />
 
                 <Button
+                    android:background="@drawable/btn_rounded_corner"
                     android:id="@+id/button_edit_login"
                     android:layout_width="10dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/teal_700"
+                    android:backgroundTint="#E91E63"
                     android:enabled="true"
                     android:maxWidth="26dp"
                     android:onClick="editLogin"
@@ -138,13 +139,14 @@
                     android:textStyle="italic" />
 
                 <Button
+                    android:background="@drawable/btn_rounded_corner"
                     android:id="@+id/button_edit_phone"
                     android:layout_width="10dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/teal_700"
+                    android:backgroundTint="#E91E63"
                     android:enabled="true"
                     android:maxWidth="26dp"
                     android:onClick="editShopName"
@@ -160,12 +162,13 @@
             </LinearLayout>
 
             <Button
+                android:background="@drawable/btn_rounded_corner"
                 android:id="@+id/button_change_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/teal_700"
+                android:backgroundTint="#E91E63"
                 android:enabled="true"
                 android:onClick="changePassword"
                 android:text="Change password"
@@ -177,7 +180,7 @@
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextLogin" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextWorkerLogin" />
 
         </LinearLayout>
     </ScrollView>

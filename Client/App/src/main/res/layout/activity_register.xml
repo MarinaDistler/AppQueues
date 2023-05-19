@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9C27B0"
+    android:background="#673AB7"
     tools:context="AppQueuesClient.registered.RegisterActivity">
 
     <TextView
@@ -209,7 +209,8 @@
         android:layout_width="265dp"
         android:layout_height="69dp"
         android:layout_marginTop="400dp"
-        android:backgroundTint="#00897B"
+        android:background="@drawable/btn_rounded_corner"
+        android:backgroundTint="@color/pink"
         android:enabled="true"
         android:onClick="doRegister"
         android:text="Okay"
@@ -243,7 +244,8 @@
         android:layout_width="265dp"
         android:layout_height="69dp"
         android:layout_marginTop="530dp"
-        android:backgroundTint="#00897B"
+        android:background="@drawable/btn_rounded_corner"
+        android:backgroundTint="@color/pink"
         android:enabled="true"
         android:onClick="goLogin"
         android:text="Sign in"
