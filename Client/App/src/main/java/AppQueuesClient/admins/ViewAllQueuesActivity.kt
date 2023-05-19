@@ -53,12 +53,19 @@ class ViewAllQueuesActivity : BaseActivity() {
             return
         }
         val queues = answer.getJSONArray("queues")
-        val layout = findViewById<LinearLayout>(R.id.layout_queues)
-        layout.postDelayed({
-            for (i in 0 until queues.length()) {
-                createButtonWithDelete(this, queues.getString(i), ::toEditQueue,
-                    ::deleteQueue, layout)
-            } }, 1)
+        if (queues.length() == 0) {
+            findViewById<TextView>(R.id.textNoQueues).visibility = View.VISIBLE
+        } else {
+            val layout = findViewById<LinearLayout>(R.id.layout_queues)
+            layout.postDelayed({
+                for (i in 0 until queues.length()) {
+                    createButtonWithDelete(
+                        this, queues.getString(i), ::toEditQueue,
+                        ::deleteQueue, layout
+                    )
+                }
+            }, 1)
+        }
     }
 
     fun editShopName(view: View?) {
