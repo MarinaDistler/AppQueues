@@ -72,10 +72,16 @@ class ViewAllQueuesActivity : BaseActivity() {
         showDialogEditText("Edit shop name", null,true,
             "Save", {dialog, mview ->
                 val str = mview.findViewById<EditText>(R.id.dialogEditText).text.toString()
+                val text_error = mview.findViewById<TextView>(R.id.dialogTextError)
                 val answer = network.doHttpPost(path_profile, JSONObject().put("shop_name", str))
                 network.checkForError(answer, arrayOf(), this)
-                restartActivity()
-                dialog.cancel() },
+                if (answer.has("notification")) {
+                    text_error.visibility = View.VISIBLE
+                    text_error.text = answer.getString("notification")
+                } else {
+                    restartActivity()
+                    dialog.cancel()
+                } },
             "Cancel", {dialog, _ -> dialog.cancel()},
             "Shop name: ", shop_name
         )

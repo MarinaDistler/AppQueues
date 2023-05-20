@@ -608,7 +608,21 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "update users set login=? where user_id=?";
+            String sql = "select count(*) as number from users where login=? and user_id!=?";
+            JSONObject info = doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(login, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{RtrngOf("number", TYPES.INT)},
+                    ANSWER_MODE.ONE_ANSWER, new JSONObject());
+            if (checkForError(info)) {
+                CloseDB();
+                return answer;
+            }
+            if (info.getInt("number") != 0) {
+                answer.put("notification", "Login already exists!");
+                CloseDB();
+                return answer;
+            }
+            sql = "update users set login=? where user_id=?";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(login, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
                     new Returning[]{},
@@ -626,7 +640,21 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "update users set shop_name=? where user_id=?";
+            String sql = "select count(*) as number from users where shop_name=? and user_id!=?";
+            JSONObject info = doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(shop_name, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{RtrngOf("number", TYPES.INT)},
+                    ANSWER_MODE.ONE_ANSWER, new JSONObject());
+            if (checkForError(info)) {
+                CloseDB();
+                return answer;
+            }
+            if (info.getInt("number") != 0) {
+                answer.put("notification", "Shop name already exists!");
+                CloseDB();
+                return answer;
+            }
+            sql = "update users set shop_name=? where user_id=?";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(shop_name, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
                     new Returning[]{},
