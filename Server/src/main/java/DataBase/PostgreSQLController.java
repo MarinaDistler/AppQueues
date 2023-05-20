@@ -696,14 +696,15 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "select record_id, queues.queue_id as queue_id, queue_name " +
-                    "from queue_users, queues where user_id=? and (status='WAIT' or status='WORK')" +
+            String sql = "select record_id, queues.queue_id as queue_id, queue_name, shop_name " +
+                    "from queue_users, queues join users on owner_user_id=users.user_id " +
+                    "where queue_users.user_id=? and (status='WAIT' or status='WORK') " +
                     "and queue_users.queue_id=queues.queue_id";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(user_id, TYPES.INT)},
                     new Returning[]{RtrngOf("record_id", TYPES.INT),
-                            RtrngOf("queue_id", TYPES.INT),
-                            RtrngOf("queue_name", TYPES.STRING)},
+                            RtrngOf("queue_id", TYPES.INT), RtrngOf("queue_name", TYPES.STRING),
+                            RtrngOf("shop_name", TYPES.STRING) },
                     ANSWER_MODE.NO_OR_ONE_ANSWER, answer);
             checkForError(answer);
         } catch (SQLException e) {

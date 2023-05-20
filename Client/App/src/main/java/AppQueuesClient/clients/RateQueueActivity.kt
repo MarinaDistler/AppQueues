@@ -13,12 +13,15 @@ import org.json.JSONObject
 class RateQueueActivity : BaseActivity() {
     private val path = "rate-queue"
     var queue: String? = null
+    var shop: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rate_queue)
         queue = intent.getStringExtra("queue")
         findViewById<TextView>(R.id.textQueueName).text = queue
+        shop = intent.getStringExtra("shop")
+        findViewById<TextView>(R.id.textShopNameRate).text = shop
     }
 
     fun rateQueue(view: View) {

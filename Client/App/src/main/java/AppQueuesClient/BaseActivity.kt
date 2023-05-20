@@ -291,23 +291,24 @@ open class BaseActivity : AppCompatActivity() {
         layout.addView(lin_layout)
     }
 
-    fun isUserInQueue() : String? {
+    fun isUserInQueue() : JSONObject? {
         val path = "check-user-in-queue"
         val answer = network.doHttpGet(path)
         if (network.checkForError(answer, arrayOf(), this)) {
             return null
         }
-        if (!answer.has("queue")) {
+        if (!answer.has("queue") || !answer.has("shop")) {
             return null
         }
-        return answer.getString("queue")
+        return answer
     }
 
     fun checkUserInQueue() {
-        val queue = isUserInQueue()
-        if (queue != null) {
+        val answer = isUserInQueue()
+        if (answer != null) {
             val intent = Intent(this, InfoQueueActivity::class.java)
-            intent.putExtra("queue", queue)
+            intent.putExtra("queue", answer.getString("queue"))
+            intent.putExtra("shop", answer.getString("shop"))
             intent.putExtra("is_in_queue", true)
             startActivity(intent)
         }

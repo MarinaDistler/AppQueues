@@ -29,10 +29,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/textShopNameRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="shop name"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/textSelect"
         android:layout_width="wrap_content"
         android:layout_height="90dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="110dp"
         android:text="Please rate the service of queue"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
@@ -44,14 +61,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textQueueName" />
+        app:layout_constraintTop_toTopOf="@id/textQueueName" />
 
     <RatingBar
         android:id="@+id/ratingBar"
         android:layout_width="247dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="85dp"
-        android:layout_marginTop="180dp"
+        android:layout_marginTop="160dp"
         android:layout_marginEnd="86dp"
         android:background="@drawable/btn_rounded_corner"
         android:numStars="5"
@@ -66,7 +83,7 @@
         android:id="@+id/button_save"
         android:layout_width="293dp"
         android:layout_height="62dp"
-        android:layout_marginTop="195dp"
+        android:layout_marginTop="160dp"
         android:background="@drawable/btn_rounded_corner"
         android:backgroundTint="#E91E63"
         android:enabled="true"

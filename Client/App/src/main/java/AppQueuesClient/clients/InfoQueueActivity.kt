@@ -16,12 +16,15 @@ class InfoQueueActivity : BaseActivity() {
     private val path = "info-queue"
     private var handlerThread: HandlerThread? = null
     var queue: String? = null
+    var shop: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_info_queue)
         queue = intent.getStringExtra("queue")
-        findViewById<TextView>(R.id.textShopName).text = queue
+        findViewById<TextView>(R.id.textQueueNameInfo).text = queue
+        shop = intent.getStringExtra("shop")
+        findViewById<TextView>(R.id.textShopNameInfo).text = shop
         val is_in_queue = intent.getBooleanExtra("is_in_queue", false)
         if (!is_in_queue) {
             val queue_id = intent.getIntExtra("queue_id", -1)
@@ -70,6 +73,7 @@ class InfoQueueActivity : BaseActivity() {
             val intent = Intent(this, InfoQueueActivity::class.java)
             intent.putExtra("queue", queue)
             intent.putExtra("is_in_queue", true)
+            intent.putExtra("shop", shop)
             ntfc_id_ = showNotification(title, text, ntfc_id, intent)
         }
         val text_time = findViewById<TextView>(R.id.textTime)
@@ -106,6 +110,7 @@ class InfoQueueActivity : BaseActivity() {
                 val intent = Intent(this, InfoQueueActivity::class.java)
                 intent.putExtra("queue", queue)
                 intent.putExtra("is_in_queue", true)
+                intent.putExtra("shop", shop)
                 val ntfc_id_ = showNotification(title, text, ntfc_id, intent)
                 Handler(handlerThread!!.looper).post { updateInfoEnd(ntfc_id_) }
             } else if (status == "COMPLETED") {
@@ -131,6 +136,7 @@ class InfoQueueActivity : BaseActivity() {
         if (status == "COMPLETED") {
             val intent = Intent(this, RateQueueActivity::class.java)
             intent.putExtra("queue", queue)
+            intent.putExtra("shop", shop)
             intent.putExtra("ntfc_id", ntfc_id)
             val ntfc_id_ = showNotification("Thank you for using our app", "Please rate the service of queue", ntfc_id, intent)
             intent.putExtra("ntfc_id", ntfc_id_)

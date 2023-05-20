@@ -22,18 +22,23 @@ public class CheckUserInQueueServlet extends BaseServlet {
             String status = info.getString("status");
             if (Objects.equals(status, "WORK") || Objects.equals(status, "WAIT")) {
                 answer.put("queue", session.getAttribute("queue_name"));
+                answer.put("shop", session.getAttribute("shop_name"));
             } else {
                 session.removeAttribute("record_id");
-                session.removeAttribute("queue");
+                session.removeAttribute("queue_name");
+                session.removeAttribute("shop_name");
                 session.removeAttribute("queue_id");
             }
         } else if (session.getAttribute("user_id") != null) {
             JSONObject info = controller.checkUserInQueue((int) session.getAttribute("user_id"));
-            if (info.has("record_id") && info.has("queue_id") && info.has("queue_name")) {
+            if (info.has("record_id") && info.has("queue_id") &&
+                        info.has("queue_name") && info.has("shop_name")) {
                 session.setAttribute("record_id", info.getInt("record_id"));
                 session.setAttribute("queue_id", info.getInt("queue_id"));
                 session.setAttribute("queue_name", info.getString("queue_name"));
+                session.setAttribute("shop_name", info.getString("shop_name"));
                 answer.put("queue", info.getString("queue_name"));
+                answer.put("shop", session.getAttribute("shop_name"));
             }
         }
         out.println(answer);

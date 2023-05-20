@@ -11,7 +11,7 @@
     tools:context="AppQueuesClient.clients.InfoQueueActivity">
 
     <TextView
-        android:id="@+id/textShopName"
+        android:id="@+id/textQueueNameInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textShopName2"
+        android:id="@+id/textShopNameInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
@@ -54,7 +54,7 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/textShopName">
+        app:layout_constraintTop_toTopOf="@id/textQueueNameInfo">
 
         <LinearLayout
             android:id="@+id/layout_queues"

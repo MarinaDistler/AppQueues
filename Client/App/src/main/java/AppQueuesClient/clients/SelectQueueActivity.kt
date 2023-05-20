@@ -52,6 +52,7 @@ class SelectQueueActivity : BaseActivity() {
         val intent = Intent(this, InfoQueueActivity::class.java)
         intent.putExtra("is_in_queue", false)
         intent.putExtra("queue", queue)
+        intent.putExtra("shop", shop)
         intent.putExtra("queue_id", queues!![queue as String] as Int)
         startActivity(intent)
     }

@@ -17,6 +17,7 @@ public class FindQueuesServlet extends BaseServlet {
             return;
         }
         String shop_name = request.getParameter("shop");
+        request.getSession().setAttribute("shop_name", shop_name);
         JSONObject answer = controller.findQueues(shop_name);
         out.println(answer);
     }
