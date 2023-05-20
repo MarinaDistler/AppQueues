@@ -15,17 +15,25 @@ public class InfoQueueServlet extends BaseServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = basicDo(response);
         HttpSession session = request.getSession();
-        if (checkSession(session, new String[]{"record_id", "queue_id"}, out) || checkParameters(request, new String[]{"check_status"}, out)) {
+        if (checkSession(session, new String[]{"record_id", "queue_id"}, out)) {
             return;
         }
         Integer record_id = (Integer) session.getAttribute("record_id");
         Integer queue_id = (Integer) session.getAttribute("queue_id");
         Boolean check_status = Boolean.valueOf(request.getParameter("check_status"));
+        Boolean get_limit = Boolean.valueOf(request.getParameter("get_limit"));
         JSONObject answer = new JSONObject();
-        if (!check_status) {
-            answer = controller.getInfoUserInQueue(record_id, queue_id);
-        } else {
+        if (check_status) {
             answer = controller.checkUserStatus(record_id);
+        } else if (get_limit) {
+            if (checkSession(session, new String[]{"user_id"}, out)) {
+                out.println(answer);
+                return;
+            }
+            Integer user_id = (Integer) session.getAttribute("user_id");
+            answer = controller.getUserAlertTime(user_id);
+        } else {
+            answer = controller.getInfoUserInQueue(record_id, queue_id);
         }
         out.println(answer);
     }

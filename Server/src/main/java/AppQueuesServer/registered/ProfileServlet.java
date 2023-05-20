@@ -37,6 +37,8 @@ public class ProfileServlet extends BaseServlet {
             answer = controller.updateUserLogin(user_id, body.getString("login"));
         } else if (body.has("shop_name")) {
             answer = controller.updateUserShopName(user_id, body.getString("shop_name"));
+        } else if (body.has("alert_time")) {
+            answer = controller.updateUserAlertTime(user_id, body.getInt("alert_time"));
         } else if (body.has("password")) {
             answer = controller.updateUserPassword(user_id, body.getString("password"));
         }

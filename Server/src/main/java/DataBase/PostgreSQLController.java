@@ -513,15 +513,16 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "select number from queue_users where record_id=?";
+            String sql = "select number, status from queue_users where record_id=?";
             JSONObject info = doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(record_id, TYPES.INT)},
-                    new Returning[]{RtrngOf("number", TYPES.INT)},
+                    new Returning[]{RtrngOf("number", TYPES.INT), RtrngOf("status", TYPES.STRING)},
                     ANSWER_MODE.ONE_ANSWER, new JSONObject());
-            if (checkForError(answer)) {
+            if (checkForError(info)) {
                 CloseDB();
                 return answer;
             }
+            answer.put("status", info.getString("status"));
             Integer number = info.getInt("number");
             sql = "select count(*) as number from queue_users " +
                     "where queue_id=? and status='WAIT' and number<=?";
@@ -566,13 +567,12 @@ public class PostgreSQLController {
                     answer.put("time", -1);
                 }
             }
-            sql = "select status, window_name from queue_users, queue_workers " +
+            sql = "select window_name from queue_users, queue_workers " +
                     "where queue_users.record_id=? and queue_users.worker_user_id=queue_workers.worker_user_id " +
                     "and queue_workers.queue_id=queue_users.queue_id";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(record_id, TYPES.INT)},
-                    new Returning[]{RtrngOf("status", TYPES.STRING),
-                            RtrngOf("window_name", TYPES.STRING)},
+                    new Returning[]{RtrngOf("window_name", TYPES.STRING)},
                     ANSWER_MODE.NO_OR_ONE_ANSWER, answer);
             checkForError(answer);
         } catch (SQLException e) {
@@ -587,10 +587,11 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
-            String sql = "select shop_name, login from users where user_id=?";
+            String sql = "select shop_name, login, alert_time from users where user_id=?";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(user_id, TYPES.INT)},
-                    new Returning[]{RtrngOf("shop_name", TYPES.STRING), RtrngOf("login", TYPES.STRING)},
+                    new Returning[]{RtrngOf("shop_name", TYPES.STRING), RtrngOf("login", TYPES.STRING),
+                            RtrngOf("alert_time", TYPES.INT)},
                     ANSWER_MODE.ONE_ANSWER, answer);
             if (!answer.has("shop_name")) {
                 answer.put("shop_name", "");
@@ -668,6 +669,23 @@ public class PostgreSQLController {
         return answer;
     }
 
+    public JSONObject updateUserAlertTime(Integer user_id, Integer alert_time) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "update users set alert_time=? where user_id=?";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(alert_time, TYPES.INT), PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{},
+                    ANSWER_MODE.NO_ANSWER, answer);
+            checkForError(answer);
+        } catch (SQLException e) {
+            System.out.println("Database checkUserStatus: " + e);
+            answer.put("error", e);
+        }
+        CloseDB();
+        return answer;
+    }
     public JSONObject updateUserPassword(Integer user_id, String password) {
         Conn();
         JSONObject answer = new JSONObject();
@@ -681,6 +699,24 @@ public class PostgreSQLController {
             checkForError(answer);
         } catch (SQLException e) {
             System.out.println("Database checkUserStatus: " + e);
+            answer.put("error", e);
+        }
+        CloseDB();
+        return answer;
+    }
+
+    public JSONObject getUserAlertTime(Integer user_id) {
+        Conn();
+        JSONObject answer = new JSONObject();
+        try {
+            String sql = "select alert_time as limit_mins from users where user_id=?";
+            doSql(conn.prepareStatement(sql),
+                    new Parameter[]{PrmtrOf(user_id, TYPES.INT)},
+                    new Returning[]{RtrngOf("limit_mins", TYPES.INT)},
+                    ANSWER_MODE.ONE_ANSWER, answer);
+            checkForError(answer);
+        } catch (SQLException e) {
+            System.out.println("Database getUserAlertTime: " + e);
             answer.put("error", e);
         }
         CloseDB();
@@ -744,7 +780,7 @@ public class PostgreSQLController {
         return answer;
     }
 
-    public JSONObject createUser(String login, String password, String shop_name) {
+    public JSONObject createUser(String login, String password, String shop_name, Integer alert_time) {
         Conn();
         JSONObject answer = new JSONObject();
         try {
@@ -779,10 +815,10 @@ public class PostgreSQLController {
                     return answer;
                 }
             }
-            sql = "insert into users(login, password, shop_name) values (?, ?, ?) returning user_id";
+            sql = "insert into users(login, password, shop_name, alert_time) values (?, ?, ?, ?) returning user_id";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(login, TYPES.STRING), PrmtrOf(password, TYPES.STRING),
-                            PrmtrOf(shop_name, TYPES.STRING)},
+                            PrmtrOf(shop_name, TYPES.STRING), PrmtrOf(alert_time, TYPES.INT)},
                     new Returning[]{RtrngOf("user_id", TYPES.INT)},
                     ANSWER_MODE.NO_OR_ONE_ANSWER, answer);
             checkForError(answer);

@@ -50,14 +50,20 @@ class RegisterActivity : BaseActivity() {
         val pass1 = findViewById<EditText>(R.id.editTextPassword1).text.toString()
         val pass2 = findViewById<EditText>(R.id.editTextPassword2).text.toString()
         val shop_name = findViewById<EditText>(R.id.editTextShopName).text.toString()
+        val alert_time = findViewById<EditText>(R.id.editAlertTime).text.toString()
         if (login.isEmpty() or pass1.isEmpty() or pass2.isEmpty()) {
             showSnackBar("Fields with * must not be empty!")
         } else if (pass1 != pass2) {
             showSnackBar("Passwords must be the same!")
+        } else if (alert_time.isNotEmpty() && alert_time.toIntOrNull() == null) {
+            showSnackBar("The alert time must be a number!")
         } else {
             val json = JSONObject().put("login", login).put("password", pass1)
             if (shop_name.isNotEmpty()) {
                 json.put("shop_name", shop_name)
+            }
+            if (alert_time.isNotEmpty()) {
+                json.put("alert_time", alert_time.toInt())
             }
             val answer = network.doHttpPost(path, json)
             if (network.checkForError(answer, arrayOf(), this)) {

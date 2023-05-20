@@ -4,6 +4,7 @@ import AppQueuesClient.clients.InfoQueueActivity
 import AppQueuesClient.registered.LoginActivity
 import AppQueuesClient.registered.MainRegisteredActivity
 import AppQueuesClient.registered.ProfileActivity
+import AppQueuesClient.registered.RegisterActivity
 import android.app.*
 import android.content.Context
 import android.content.DialogInterface
@@ -95,7 +96,7 @@ open class BaseActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.item_home -> startActivity(Intent(this, MainActivity::class.java))
                 R.id.item_register -> {
-                    resultLauncherMenu.launch(Intent(this, LoginActivity::class.java))
+                    resultLauncherMenu.launch(Intent(this, RegisterActivity::class.java))
                 }
                 R.id.item_sign_in -> {
                     resultLauncherMenu.launch(Intent(this, LoginActivity::class.java))

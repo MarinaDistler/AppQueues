@@ -23,7 +23,12 @@ public class RegisterServlet extends BaseServlet {
         if (body.has("shop_name")) {
             shop_name = body.getString("shop_name");
         }
-        JSONObject answer = controller.createUser(body.getString("login"), body.getString("password"), shop_name);
+        Integer alert_time = 5;
+        if (body.has("alert_time")) {
+            alert_time = body.getInt("alert_time");
+        }
+        JSONObject answer = controller.createUser(body.getString("login"), body.getString("password"),
+                shop_name, alert_time);
         if (answer.has("user_id")) {
             request.getSession().setAttribute("user_id", answer.getInt("user_id"));
             answer.remove("user_id");

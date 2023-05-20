@@ -13,6 +13,8 @@ class ProfileActivity : BaseActivity() {
     val path = "profile"
     var login: String? = null
     var shop_name: String? = null
+    var alert_time: Int? = null
+    var alert_time_text: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,13 +22,21 @@ class ProfileActivity : BaseActivity() {
         setContentView(R.layout.activity_profile)
         checkRegistered()
         val answer = network.doHttpGet(path)
-        if (network.checkForError(answer, arrayOf("shop_name", "login"), this)) {
+        if (network.checkForError(answer, arrayOf("shop_name", "login", "alert_time"), this)) {
             return
         }
         login = answer.getString("login")
         shop_name = answer.getString("shop_name")
+        alert_time = answer.getInt("alert_time")
+        alert_time_text = alert_time.toString() + " "
+        if (alert_time == 1) {
+            alert_time_text += "minute"
+        } else {
+            alert_time_text += "minutes"
+        }
         findViewById<TextView>(R.id.textLoginValue).text = login
         findViewById<TextView>(R.id.textShopNameValue).text = shop_name
+        findViewById<TextView>(R.id.textAlertTimeValue).text = alert_time_text
     }
 
     fun changePassword(view: View) {
@@ -100,6 +110,28 @@ class ProfileActivity : BaseActivity() {
                 } },
             "Cancel", {dialog, _ -> dialog.cancel()},
             "Shop name: ", shop_name
+        )
+    }
+
+    fun editAlertTime(view: View) {
+        showDialogEditText("Edit alert time", null,true,
+            "Save", {dialog, mview ->
+                val str = mview.findViewById<EditText>(R.id.dialogEditText).text.toString()
+                val text_error = mview.findViewById<TextView>(R.id.dialogTextError)
+                if (str == "") {
+                    text_error.visibility = View.VISIBLE
+                    text_error.text = "The alert time must not be empty!"
+                } else if (str.toIntOrNull() == null) {
+                    text_error.visibility = View.VISIBLE
+                    text_error.text = "The alert time must be a number!"
+                } else {
+                    val answer = network.doHttpPost(path, JSONObject().put("alert_time", str.toInt()))
+                    network.checkForError(answer, arrayOf(), this)
+                    restartActivity()
+                    dialog.cancel()
+                } },
+            "Cancel", {dialog, _ -> dialog.cancel()},
+            "Alert time: ", alert_time_text
         )
     }
 }
