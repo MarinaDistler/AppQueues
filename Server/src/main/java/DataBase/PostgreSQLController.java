@@ -672,6 +672,7 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
+            password = String.valueOf(password.hashCode());
             String sql = "update users set password=? where user_id=?";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(password, TYPES.STRING), PrmtrOf(user_id, TYPES.INT)},
@@ -747,6 +748,7 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
+            password = String.valueOf(password.hashCode());
             String sql = "select count(*) as number from users where login=?";
             JSONObject info = doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(login, TYPES.STRING)},
@@ -796,6 +798,7 @@ public class PostgreSQLController {
         Conn();
         JSONObject answer = new JSONObject();
         try {
+            password = String.valueOf(password.hashCode());
             String sql = "select user_id from users where login=? and password=?";
             doSql(conn.prepareStatement(sql),
                     new Parameter[]{PrmtrOf(login, TYPES.STRING), PrmtrOf(password, TYPES.STRING)},
