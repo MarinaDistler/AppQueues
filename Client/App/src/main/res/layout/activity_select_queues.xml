@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#673AB7"
     android:isScrollContainer="false"
-    tools:context="AppQueuesClient.clients.SelectQueueActivity">
+    tools:context="com.app.AppQueuesClient.clients.SelectQueueActivity">
 
     <TextView
         android:id="@+id/textSelect"

@@ -1,15 +1,14 @@
-package AppQueuesClient.workers
+package com.app.AppQueuesClient.admins
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import AppQueuesClient.BaseActivity
-import AppQueuesClient.admins.EditQueueActivity
-import com.example.app.R
+import com.app.AppQueuesClient.BaseActivity
+import com.app.R
 
-class StatisticActivity : BaseActivity() {
+class ViewQueueActivity : BaseActivity() {
     val path = "edit-queue"
     var queue_name: String? = null
 

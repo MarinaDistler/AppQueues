@@ -1,12 +1,11 @@
-package AppQueuesClient.registered
+package com.app.AppQueuesClient.registered
 
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import AppQueuesClient.BaseActivity
-import android.opengl.Visibility
+import com.app.AppQueuesClient.BaseActivity
 import android.widget.EditText
-import com.example.app.R
+import com.app.R
 import org.json.JSONObject
 
 class ProfileActivity : BaseActivity() {

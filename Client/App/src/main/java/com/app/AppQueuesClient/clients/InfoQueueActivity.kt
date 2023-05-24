@@ -1,4 +1,4 @@
-package AppQueuesClient.clients
+package com.app.AppQueuesClient.clients
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,9 +7,9 @@ import android.os.HandlerThread
 import android.os.Looper
 import android.view.View
 import android.widget.TextView
-import AppQueuesClient.BaseActivity
-import AppQueuesClient.MainActivity
-import com.example.app.R
+import com.app.AppQueuesClient.BaseActivity
+import com.app.AppQueuesClient.MainActivity
+import com.app.R
 import org.json.JSONObject
 
 class InfoQueueActivity : BaseActivity() {

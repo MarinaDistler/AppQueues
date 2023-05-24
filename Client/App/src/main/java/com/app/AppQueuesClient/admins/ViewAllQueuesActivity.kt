@@ -1,4 +1,4 @@
-package AppQueuesClient.admins
+package com.app.AppQueuesClient.admins
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,10 +6,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.view.*
-import AppQueuesClient.BaseActivity
+import com.app.AppQueuesClient.BaseActivity
 import android.widget.EditText
 import android.widget.TextView
-import com.example.app.R
+import com.app.R
 import org.json.JSONObject
 
 class ViewAllQueuesActivity : BaseActivity() {

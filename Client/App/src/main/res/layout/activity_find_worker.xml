@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="#673AB7"
     android:isScrollContainer="false"
-    tools:context="AppQueuesClient.admins.FindWorkerActivity">
+    tools:context="com.app.AppQueuesClient.admins.FindWorkerActivity">
 
     <TextView
         android:id="@+id/textEnterLofinWorker"

@@ -1,8 +1,8 @@
-package network
+package com.app.network
 
 import android.content.Context
 import android.content.SharedPreferences
-import AppQueuesClient.BaseActivity
+import com.app.AppQueuesClient.BaseActivity
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.Headers
 import com.github.kittinunf.fuel.core.extensions.jsonBody
@@ -10,7 +10,7 @@ import com.github.kittinunf.fuel.json.responseJson
 import org.json.JSONObject
 
 class Network () {
-    private val URL = "http://10.0.2.2:8080/"
+    private val URL = "http://acledit.ru:8080/AppQueuesServer/"
     private val PREFS_NAME = "network_setting"
     var sharedPref: SharedPreferences? = null
 
@@ -25,7 +25,7 @@ class Network () {
         }
         for (name in names) {
             if (!answer.has(name)) {
-                activity.showSnackBar("server error: " + name + " should be in answer")
+                activity.showSnackBar("server error: $name should be in answer")
                 return true
             }
         }
@@ -41,7 +41,7 @@ class Network () {
         val response = request
             .responseJson{_, _, _, -> }
             .join()
-        println("GET " + URL + path)
+        println("GET $URL$path")
         println(request)
         if (!response.header("Set-Cookie").isEmpty()) {
             val editor = sharedPref!!.edit()
@@ -69,7 +69,7 @@ class Network () {
             .jsonBody(json.toString())
             .responseJson{_, _, _, -> }
             .join()
-        println("POST " + URL + path)
+        println("POST $URL$path")
         println(request)
         if (!response.header("Set-Cookie").isEmpty()) {
             val editor = sharedPref!!.edit()

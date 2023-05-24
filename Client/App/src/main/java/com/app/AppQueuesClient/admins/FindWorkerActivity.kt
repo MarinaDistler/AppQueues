@@ -1,4 +1,4 @@
-package AppQueuesClient.admins
+package com.app.AppQueuesClient.admins
 
 import android.app.Activity
 import android.content.Intent
@@ -7,8 +7,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import AppQueuesClient.BaseActivity
-import com.example.app.R
+import com.app.AppQueuesClient.BaseActivity
+import com.app.R
 import org.json.JSONArray
 
 class FindWorkerActivity : BaseActivity() {

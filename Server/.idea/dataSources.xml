@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/AppQueues</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="appqueues@localhost" uuid="4b66a22e-671b-46d8-b05d-28cfc97f1d4d">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:51492/appqueues</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

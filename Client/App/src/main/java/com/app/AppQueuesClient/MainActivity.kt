@@ -1,13 +1,13 @@
-package AppQueuesClient
+package com.app.AppQueuesClient
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import AppQueuesClient.admins.ViewAllQueuesActivity
-import AppQueuesClient.clients.FindShopsActivity
-import AppQueuesClient.registered.MainRegisteredActivity
-import com.example.app.R
+import com.app.AppQueuesClient.admins.ViewAllQueuesActivity
+import com.app.AppQueuesClient.clients.FindShopsActivity
+import com.app.AppQueuesClient.registered.MainRegisteredActivity
+import com.app.R
 
 class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

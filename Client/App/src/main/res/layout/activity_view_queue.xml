@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="#673AB7"
     android:isScrollContainer="false"
-    tools:context="AppQueuesClient.admins.ViewQueueActivity">
+    tools:context="com.app.AppQueuesClient.admins.ViewQueueActivity">
 
     <TextView
         android:id="@+id/textTheQueue"

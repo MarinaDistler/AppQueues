@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#673AB7"
-    tools:context="AppQueuesClient.MainActivity"
+    tools:context="com.app.AppQueuesClient.MainActivity"
 >
 
     <TextView

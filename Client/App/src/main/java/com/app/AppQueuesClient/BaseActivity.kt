@@ -1,10 +1,10 @@
-package AppQueuesClient
+package com.app.AppQueuesClient
 
-import AppQueuesClient.clients.InfoQueueActivity
-import AppQueuesClient.registered.LoginActivity
-import AppQueuesClient.registered.MainRegisteredActivity
-import AppQueuesClient.registered.ProfileActivity
-import AppQueuesClient.registered.RegisterActivity
+import com.app.AppQueuesClient.clients.InfoQueueActivity
+import com.app.AppQueuesClient.registered.LoginActivity
+import com.app.AppQueuesClient.registered.MainRegisteredActivity
+import com.app.AppQueuesClient.registered.ProfileActivity
+import com.app.AppQueuesClient.registered.RegisterActivity
 import android.app.*
 import android.content.Context
 import android.content.DialogInterface
@@ -27,10 +27,10 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import com.example.app.R
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import network.Network
+import com.app.network.Network
+import com.app.R
 import org.json.JSONObject
 
 

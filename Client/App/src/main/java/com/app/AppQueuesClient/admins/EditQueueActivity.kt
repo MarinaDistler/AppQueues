@@ -1,4 +1,4 @@
-package AppQueuesClient.admins
+package com.app.AppQueuesClient.admins
 
 import android.app.Activity
 import android.content.Intent
@@ -9,8 +9,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.get
-import AppQueuesClient.BaseActivity
-import com.example.app.R
+import com.app.AppQueuesClient.BaseActivity
+import com.app.R
 import org.json.JSONArray
 import org.json.JSONObject
 

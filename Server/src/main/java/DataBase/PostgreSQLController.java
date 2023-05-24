@@ -54,8 +54,8 @@ public class PostgreSQLController {
     public static void Conn() {
         try {
             Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection("jdbc:postgresql:AppQueues",
-                    "root", "247A247a");
+            conn = DriverManager.getConnection("jdbc:postgresql://localhost:51492/appqueues",
+                    "app_queues_root", "qw23edr45555");
         } catch (Exception e) {
             System.out.println(e);
         }
